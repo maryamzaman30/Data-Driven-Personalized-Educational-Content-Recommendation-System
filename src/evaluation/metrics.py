@@ -65,8 +65,7 @@ def evaluate_user_model(user_ids, recommend_fn, ground_truth_fn, score_fn=None, 
     return aggregated
 
 # TF-IDF parameter tuning
-def tune_tfidf_params(param_grid, vectorizer_class, X_raw, y_true_fn, recommend_fn_builder,
-                      ground_truth_fn, score_fn=None, true_score_fn=None, k=10, output_path=None):
+def tune_tfidf_params(param_grid, vectorizer_class, X_raw, y_true_fn, recommend_fn_builder, ground_truth_fn, k=10, output_path=None):
     results = []
     for params in param_grid:
         print(f"Testing TF-IDF params: {params}")
@@ -78,16 +77,12 @@ def tune_tfidf_params(param_grid, vectorizer_class, X_raw, y_true_fn, recommend_
                 user_ids=y_true_fn(),
                 recommend_fn=recommender,
                 ground_truth_fn=ground_truth_fn,
-                score_fn=score_fn,
-                true_score_fn=true_score_fn,
                 k_vals=[k]
             )
             result = {
                 'params': str(params),
                 'precision': metrics[k]['precision'],
-                'recall': metrics[k]['recall'],
-                'rmse': metrics.get('rmse', None),
-                'auc': metrics.get('auc', None)
+                'recall': metrics[k]['recall']
             }
             print(result)
             results.append(result)
@@ -98,9 +93,9 @@ def tune_tfidf_params(param_grid, vectorizer_class, X_raw, y_true_fn, recommend_
     if output_path:
         df.to_csv(output_path, index=False)
 
-    # Plot precision scores
+    # Plot tuning results
     if not df.empty:
-        df_sorted = df_sorted[["params", "precision"]].set_index("params").plot(kind="bar", figsize=(10, 5), legend=False, title="Precision@K by TF-IDF Params")
+        df_sorted = df.sort_values("precision", ascending=False)
         plt.figure(figsize=(10, 5))
         sns.barplot(data=df_sorted, x="params", y="precision")
         plt.title("TF-IDF Parameter Tuning (Precision@K)")
