@@ -2,7 +2,6 @@ import re
 import os
 import pandas as pd
 import numpy as np
-import pickle
 from sklearn.model_selection import train_test_split
 
 def preprocess_content_text(text):
@@ -93,51 +92,3 @@ def prepare_matrices(merged_df, min_interactions=5):
     for u, i, r in train: train_matrix[u, i] = r
     for u, i, r in test: test_matrix[u, i] = r
     return train_matrix, test_matrix, user_map, item_map
-
-def load_content_model(path='models/content_based_model.pkl'):
-    """Load precomputed content similarity model"""
-    try:
-        with open(path, 'rb') as f:
-            return pickle.load(f)
-    except Exception as e:
-        print(f"Failed to load content model: {e}")
-        return None
-
-def load_hybrid_model(path='../models/svd_hybrid_model.pkl'):
-    """Load pre-trained hybrid model and auto-initialize if needed"""
-    try:
-        with open(path, 'rb') as f:
-            model_package = pickle.load(f)
-            required_keys = ['recommender', 'train_matrix', 'user_map', 'item_map', 'reverse_item_map']
-            if not all(key in model_package for key in required_keys):
-                raise ValueError(f"Incomplete model package. Missing keys: {required_keys - set(model_package.keys())}")
-
-            recommender = model_package['recommender']
-            train_matrix = model_package['train_matrix']
-            
-            # Initialize the recommender with required components
-            recommender.initialize(
-                train_matrix=train_matrix,
-                user_map=model_package['user_map'],
-                item_map=model_package['item_map'],
-                reverse_item_map=model_package['reverse_item_map']
-            )
-
-            # Ensure SVD factors are computed
-            if recommender.user_factors is None or recommender.item_factors is None:
-                recommender.fit(train_matrix, model_package.get('content_similarity'))
-
-            # Validate initialization
-            if recommender.train_matrix is None or \
-               recommender.user_map is None or \
-               recommender.item_map is None:
-                raise ValueError("Recommender initialization failed")
-
-            return model_package
-
-    except FileNotFoundError:
-        print(f"Model file not found at {path}")
-        raise
-    except Exception as e:
-        print(f"Failed to load hybrid model: {e}")
-        raise ValueError(f"Failed to load hybrid model: {e}")

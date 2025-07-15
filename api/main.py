@@ -32,8 +32,6 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="TOEIC Recommendation System")
 
-from src.recommender.loader import load_all_models
-
 models = load_all_models()
 lectures_df = models["lectures_df"]
 merged_df = models["merged_df"]
