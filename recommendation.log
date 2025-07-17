@@ -2,3 +2,43 @@
 2025-07-15 17:46:26,966 [INFO] Advanced hybrid model loaded successfully
 2025-07-15 17:46:50,759 [INFO] Hybrid model loaded and initialized successfully
 2025-07-15 17:46:53,810 [INFO] Advanced hybrid model loaded successfully
+2025-07-17 22:04:49,390 [ERROR] Recommendation error: 'user_map'
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 60, in recommend
+    if user_id not in models['user_map']:
+KeyError: 'user_map'
+2025-07-17 22:05:02,761 [ERROR] Recommendation error: 'user_map'
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 60, in recommend
+    if user_id not in models['user_map']:
+KeyError: 'user_map'
+2025-07-17 22:05:16,732 [ERROR] Recommendation error: 'user_map'
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 60, in recommend
+    if user_id not in models['user_map']:
+KeyError: 'user_map'
+2025-07-17 22:05:28,546 [ERROR] Recommendation error: 'user_map'
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 60, in recommend
+    if user_id not in models['user_map']:
+KeyError: 'user_map'
+2025-07-17 22:08:38,317 [ERROR] Recommendation error: get_hybrid_advanced_recommendations() missing 6 required positional arguments: 'recommender', 'item_map', 'reverse_item_map', 'ncf_model', 'device', and 'meta_learner'
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 64, in recommend
+    recommendations = get_hybrid_advanced_recommendations(user_id, n, models, merged_df)
+TypeError: get_hybrid_advanced_recommendations() missing 6 required positional arguments: 'recommender', 'item_map', 'reverse_item_map', 'ncf_model', 'device', and 'meta_learner'
+2025-07-17 22:08:49,997 [ERROR] Recommendation error: 400: Invalid recommendation type
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 70, in recommend
+    raise HTTPException(status_code=400, detail="Invalid recommendation type")
+fastapi.exceptions.HTTPException: 400: Invalid recommendation type
+2025-07-17 22:09:01,899 [ERROR] Recommendation error: get_ncf_recommendations() missing 4 required positional arguments: 'reverse_item_map', 'bundle_info', 'ncf_model', and 'device'
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 68, in recommend
+    recommendations = get_ncf_recommendations(user_id, n, models)
+TypeError: get_ncf_recommendations() missing 4 required positional arguments: 'reverse_item_map', 'bundle_info', 'ncf_model', and 'device'
+2025-07-17 22:09:12,317 [ERROR] Recommendation error: 400: Invalid recommendation type
+Traceback (most recent call last):
+  File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 70, in recommend
+    raise HTTPException(status_code=400, detail="Invalid recommendation type")
+fastapi.exceptions.HTTPException: 400: Invalid recommendation type

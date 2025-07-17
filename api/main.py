@@ -1,104 +1,110 @@
 # File: api/main.py
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List
-import logging
-import pandas as pd
 
-from src.utils.mappings import get_toeic_part_mapping, get_subject_categories, enrich_recommendations_with_metadata
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from src.recommender.schemas import RecommendationRequest
 from src.utils.preprocessing import load_all_models
 from src.recommender.logic import (
     get_sbert_recommendations,
     get_ncf_recommendations,
     get_hybrid_advanced_recommendations
 )
-from src.recommender.schemas import (
-    RecommendationRequest, RecommendationResponse,
-    UserHistoryRequest, UserHistoryResponse,
-    HistoryItem
-)
 
-# Setup logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("recommendation.log"),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+app = FastAPI()
 
-app = FastAPI(title="TOEIC Recommendation System")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 models = load_all_models()
-lectures_df = models["lectures_df"]
-merged_df = models["merged_df"]
-content_model = models["content_model"]
-hybrid_model = models["hybrid_model"]
-advanced_model = models["advanced_model"]
 
 @app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+def health_check():
+    return {"status": "ok"}
 
 @app.get("/users")
-async def get_users():
-    try:
-        users = sorted(merged_df['user_id'].unique())
-        return {"users": users}
-    except Exception as e:
-        logger.error(f"Failed to load users: {e}")
-        raise HTTPException(status_code=500, detail="Error loading users")
+def get_users():
+    user_ids = sorted(models["merged_df"]["user_id"].unique())
+    return {"users": user_ids}
 
-@app.post("/recommendations", response_model=RecommendationResponse)
-async def recommend(req: RecommendationRequest):
+@app.get("/user/{user_id}/history")
+def user_history(user_id: str):
+    df = models["merged_df"]
+    if user_id not in df["user_id"].unique():
+        raise HTTPException(status_code=404, detail="User not found")
+
+    history = df[df["user_id"] == user_id].sort_values("timestamp")
+    return {
+        "history": history.to_dict(orient="records"),
+        "total_interactions": len(history)
+    }
+
+@app.post("/recommendations")
+def recommend(req: RecommendationRequest):
     user_id = req.user_id
     n = req.n_recommendations
+    rec_type = req.recommendation_type
+
+    df = models["merged_df"]
+    if user_id not in df["user_id"].unique():
+        raise HTTPException(status_code=404, detail="User not found")
 
     try:
-        if user_id not in models['user_map']:
-            raise HTTPException(status_code=404, detail=f"User {user_id} not found")
+        if rec_type == "content":
+            return {"recommendations": get_sbert_recommendations(
+                user_id=user_id,
+                merged_df=models["merged_df"],
+                bundle_info=models["advanced_model"]["bundle_info"],
+                sbert_embeddings=models["advanced_model"]["sbert_embeddings"],
+                n=n
+            )}
 
-        if req.recommendation_type == "hybrid":
-            recommendations = get_hybrid_advanced_recommendations(user_id, n, models, merged_df)
-        elif req.recommendation_type == "content_based":
-            recommendations = get_sbert_recommendations(user_id, n, models, merged_df)
-        elif req.recommendation_type == "collaborative":
-            recommendations = get_ncf_recommendations(user_id, n, models)
+        elif rec_type == "collaborative":
+            return {"recommendations": get_ncf_recommendations(
+                user_id=user_id,
+                recommender=models["hybrid_model"]["recommender"],
+                item_map=models["hybrid_model"]["item_map"],
+                reverse_item_map=models["hybrid_model"]["reverse_item_map"],
+                bundle_info=models["advanced_model"]["bundle_info"],
+                ncf_model=models["advanced_model"]["ncf_model"],
+                device=models["advanced_model"]["device"],
+                n=n
+            )}
+
+        elif rec_type == "advanced_hybrid":
+            return {"recommendations": get_hybrid_advanced_recommendations(
+                user_id=user_id,
+                merged_df=models["merged_df"],
+                sbert_embeddings=models["advanced_model"]["sbert_embeddings"],
+                bundle_info=models["advanced_model"]["bundle_info"],
+                recommender=models["hybrid_model"]["recommender"],
+                item_map=models["hybrid_model"]["item_map"],
+                reverse_item_map=models["hybrid_model"]["reverse_item_map"],
+                ncf_model=models["advanced_model"]["ncf_model"],
+                device=models["advanced_model"]["device"],
+                meta_learner=models["advanced_model"]["meta_learner"],
+                n=n
+            )}
+
+        elif rec_type == "hybrid":
+            return {"recommendations": get_ncf_recommendations(
+                user_id=user_id,
+                recommender=models["hybrid_model"]["recommender"],
+                item_map=models["hybrid_model"]["item_map"],
+                reverse_item_map=models["hybrid_model"]["reverse_item_map"],
+                bundle_info=models["advanced_model"]["bundle_info"],
+                ncf_model=models["advanced_model"]["ncf_model"],
+                device=models["advanced_model"]["device"],
+                n=n
+            )}
+
         else:
             raise HTTPException(status_code=400, detail="Invalid recommendation type")
 
-        enriched = enrich_recommendations_with_metadata(recommendations, lectures_df)
-
-        return RecommendationResponse(
-            user_id=user_id,
-            recommendations=enriched,
-            recommendation_type=req.recommendation_type
-        )
     except Exception as e:
-        logger.error(f"Recommendation error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Internal server error")
-
-@app.get("/user/{user_id}/history", response_model=UserHistoryResponse)
-async def get_user_history(user_id: str, limit: int = 50):
-    try:
-        history = merged_df[merged_df['user_id'] == user_id]
-        history = history.sort_values("timestamp", ascending=False).head(limit)
-        part_names = get_toeic_part_mapping()
-        items = [
-            HistoryItem(
-                question_id=row['question_id'],
-                bundle_id=row['bundle_id'],
-                timestamp=row['timestamp'],
-                is_correct=row['user_answer'] == row['correct_answer'],
-                elapsed_time=row['elapsed_time'],
-                part=part_names.get(float(row['part']), f"Part {row['part']}"),
-                subjects=get_subject_categories(row['tags'])
-            )
-            for _, row in history.iterrows()
-        ]
-        return UserHistoryResponse(user_id=user_id, history=items)
-    except Exception as e:
-        logger.error(f"User history error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Failed to fetch user history")
+        print(f"[ERROR] Recommendation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

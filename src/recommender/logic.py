@@ -32,11 +32,11 @@ def get_sbert_recommendations(user_id, merged_df, bundle_info, sbert_embeddings,
 
     return [
         {
-            'item_id': b,
-            'score': round(score, 4),
+            'item_id': str(row['bundle_id']),
+            'score': round(float(score), 4),
             'title': f"{row['part_name']}: {row['subject_category'].replace('_', ' ').title()}",
             'part': row['part_name'],
-            'part_id': row['part'],
+            'part_id': int(row['part']),
             'subjects': get_subject_categories(row['tags']),
             'duration_minutes': 0,
             'type': 'bundle'

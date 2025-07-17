@@ -180,7 +180,6 @@ Returns:
 
 @lru_cache(maxsize=1)
 def load_all_models():
-
     lectures_df, merged_df = load_clean_data()
     content_model = load_content_model('models/content_based_model_best.pkl')
     hybrid_model = load_hybrid_model('models/svd_hybrid_model_best.pkl')
@@ -191,6 +190,5 @@ def load_all_models():
         "merged_df": merged_df,
         "content_model": content_model,
         "hybrid_model": hybrid_model,
-        "advanced_model": advanced_model
+        "advanced_model": advanced_model,
     }
-    
