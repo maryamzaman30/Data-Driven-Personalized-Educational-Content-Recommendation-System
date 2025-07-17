@@ -69,9 +69,9 @@ def enrich_recommendations_with_metadata(recommendations, lectures_df):
                         'score': round(float(score), 4),
                         'title': create_lecture_title(row['lecture_id'], row['part'], row['tags'], row.get('video_minutes')),
                         'part': get_part_name(row['part']),
-                        'part_id': row['part'],
+                        'part_id': int(row['part']),
+                        'duration_minutes': float(row.get('video_minutes', 0)),
                         'subjects': get_subject_categories(row['tags']),
-                        'duration_minutes': row.get('video_minutes', 0),
                         'type': 'lecture'
                     })
             else:

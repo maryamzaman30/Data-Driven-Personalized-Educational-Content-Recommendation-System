@@ -1,6 +1,6 @@
 # File: src/recommender/schemas.py
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List
 
 class RecommendationRequest(BaseModel):
@@ -8,15 +8,18 @@ class RecommendationRequest(BaseModel):
     n_recommendations: int = 10
     recommendation_type: str = "hybrid"
 
+
+
 class Recommendation(BaseModel):
     item_id: str
-    score: float
+    score: float = Field(..., example=0.85)
     title: str
     part: str
-    part_id: float
+    part_id: int
     subjects: List[str]
     duration_minutes: float
     type: str
+
 
 class RecommendationResponse(BaseModel):
     user_id: str

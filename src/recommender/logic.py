@@ -3,10 +3,8 @@
 import numpy as np
 import pandas as pd
 import torch
-from torch import nn
 from sklearn.metrics.pairwise import cosine_similarity
 from src.utils.mappings import get_subject_categories
-
 
 def get_sbert_recommendations(user_id, merged_df, bundle_info, sbert_embeddings, n=10):
     user_history = merged_df[merged_df['user_id'] == user_id]
@@ -30,8 +28,13 @@ def get_sbert_recommendations(user_id, merged_df, bundle_info, sbert_embeddings,
     max_score = max(scores.values())
     top_bundles = sorted(((k, v / max_score) for k, v in scores.items()), key=lambda x: x[1], reverse=True)[:n]
 
-    return [
-        {
+    results = []
+    for b, score in top_bundles:
+        row_match = bundle_info[bundle_info['bundle_id'] == b]
+        if row_match.empty:
+            continue
+        row = row_match.iloc[0]
+        results.append({
             'item_id': str(row['bundle_id']),
             'score': round(float(score), 4),
             'title': f"{row['part_name']}: {row['subject_category'].replace('_', ' ').title()}",
@@ -40,15 +43,13 @@ def get_sbert_recommendations(user_id, merged_df, bundle_info, sbert_embeddings,
             'subjects': get_subject_categories(row['tags']),
             'duration_minutes': 0,
             'type': 'bundle'
-        }
-        for b, score in top_bundles
-        if not bundle_info[bundle_info['bundle_id'] == b].empty
-        for row in [bundle_info[bundle_info['bundle_id'] == b].iloc[0]]
-    ]
+        })
+    return results
 
 def get_ncf_recommendations(user_id, recommender, item_map, reverse_item_map, bundle_info, ncf_model, device, n=10):
     if user_id not in recommender.user_map:
         return []
+
     user_idx = recommender.user_map[user_id]
     known_items = np.where(recommender.train_matrix[user_idx] > 0)[0]
     candidate_items = np.setdiff1d(np.arange(len(item_map)), known_items)
@@ -61,21 +62,24 @@ def get_ncf_recommendations(user_id, recommender, item_map, reverse_item_map, bu
     top_indices = np.argsort(-scores)[:n]
     top_items = candidate_items[top_indices]
 
-    return [
-        {
-            'item_id': reverse_item_map[item_idx],
+    results = []
+    for item_idx, score in zip(top_items, scores[top_indices]):
+        b_id = reverse_item_map[item_idx]
+        row_match = bundle_info[bundle_info['bundle_id'] == b_id]
+        if row_match.empty:
+            continue
+        row = row_match.iloc[0]
+        results.append({
+            'item_id': b_id,
             'score': round(float(score), 4),
             'title': f"{row['part_name']}: {row['subject_category'].replace('_', ' ').title()}",
             'part': row['part_name'],
-            'part_id': row['part'],
+            'part_id': int(row['part']),
             'subjects': get_subject_categories(row['tags']),
             'duration_minutes': 0,
             'type': 'bundle'
-        }
-        for item_idx, score in zip(top_items, scores[top_indices])
-        if not bundle_info[bundle_info['bundle_id'] == reverse_item_map[item_idx]].empty
-        for row in [bundle_info[bundle_info['bundle_id'] == reverse_item_map[item_idx]].iloc[0]]
-    ]
+        })
+    return results
 
 def generate_hybrid_features(user_id, merged_df, sbert_embeddings, bundle_info,
                               recommender, item_map, reverse_item_map,
@@ -101,9 +105,12 @@ def generate_hybrid_features(user_id, merged_df, sbert_embeddings, bundle_info,
             features[rec['item_id']]['ncf_score'] = rec['score']
 
     for feat in features.values():
-        row = bundle_info[bundle_info['bundle_id'] == feat['bundle_id']].iloc[0]
-        feat['part_id'] = row['part']
-        feat['success_rate'] = row['success_rate']
+        row_match = bundle_info[bundle_info['bundle_id'] == feat['bundle_id']]
+        if row_match.empty:
+            continue
+        row = row_match.iloc[0]
+        feat['part_id'] = int(row.get('part', 0))
+        feat['success_rate'] = float(row.get('success_rate', 0.0))
 
     return pd.DataFrame(features.values())
 
@@ -116,21 +123,25 @@ def get_hybrid_advanced_recommendations(user_id, merged_df, sbert_embeddings, bu
     )
     if features_df.empty:
         return []
+
     X = features_df[['sbert_score', 'ncf_score', 'part_id', 'success_rate']].values
     features_df['hybrid_score'] = meta_learner.predict(X)
     top_recs = features_df.sort_values('hybrid_score', ascending=False).head(n)
 
-    return [
-        {
+    results = []
+    for _, row in top_recs.iterrows():
+        row_match = bundle_info[bundle_info['bundle_id'] == row['bundle_id']]
+        if row_match.empty:
+            continue
+        bundle_row = row_match.iloc[0]
+        results.append({
             'item_id': row['bundle_id'],
             'score': round(float(row['hybrid_score']), 4),
             'title': f"{bundle_row['part_name']}: {bundle_row['subject_category'].replace('_', ' ').title()}",
             'part': bundle_row['part_name'],
-            'part_id': bundle_row['part'],
+            'part_id': int(row['part_id']),
             'subjects': get_subject_categories(bundle_row['tags']),
             'duration_minutes': 0,
             'type': 'bundle'
-        }
-        for _, row in top_recs.iterrows()
-        for bundle_row in [bundle_info[bundle_info['bundle_id'] == row['bundle_id']].iloc[0]]
-    ]
+        })
+    return results
