@@ -5,9 +5,8 @@ from typing import List
 import logging
 import pandas as pd
 
-from src.utils.preprocessing import load_clean_data
 from src.utils.mappings import get_toeic_part_mapping, get_subject_categories, enrich_recommendations_with_metadata
-from src.recommender.loader import load_all_models
+from src.utils.preprocessing import load_all_models
 from src.recommender.logic import (
     get_sbert_recommendations,
     get_ncf_recommendations,
@@ -38,10 +37,6 @@ merged_df = models["merged_df"]
 content_model = models["content_model"]
 hybrid_model = models["hybrid_model"]
 advanced_model = models["advanced_model"]
-sbert_model = advanced_model["sbert_model"]
-ncf_model = advanced_model["ncf_model"]
-device = advanced_model["device"]
-
 
 @app.get("/health")
 async def health_check():
