@@ -20,29 +20,44 @@ def preprocess_content_text(text):
     text = re.sub(r'[;]', ' ', text.lower())  # Only remove semicolons
     return ' '.join(text.split())  # Collapse whitespace
 
+# src/utils/preprocessing.py
+
+import re
+import os
+import pandas as pd
+import numpy as np
+import pickle
+import torch
+from src.recommender.ncf import NCF
+from sklearn.model_selection import train_test_split
+from functools import lru_cache
+
+def preprocess_content_text(text):
+    if not isinstance(text, str):
+        return ''
+    text = re.sub(r'[;]', ' ', text.lower())
+    return ' '.join(text.split())
+
 def load_clean_data():
     """Load preprocessed lecture and merged data"""
     try:
-        # Load data using relative paths from notebook
-        # Get the project root directory
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        
-        # Construct absolute paths
         lectures_path = os.path.join(project_root, 'data', 'cleaned', 'cleaned_lectures.csv')
         merged_path = os.path.join(project_root, 'data', 'cleaned', 'merged_cleaned_data.csv')
         
-        # Debug print paths
         print(f"Loading from paths:\nLectures: {lectures_path}\nMerged: {merged_path}")
         
-        # Check if files exist
         if not os.path.exists(lectures_path):
             raise FileNotFoundError(f"Lectures file not found at {lectures_path}")
         if not os.path.exists(merged_path):
             raise FileNotFoundError(f"Merged file not found at {merged_path}")
         
-        # Load data
         lectures_df = pd.read_csv(lectures_path)
         merged_df = pd.read_csv(merged_path)
+        
+        # Convert video_length (milliseconds) to video_minutes
+        lectures_df['video_minutes'] = lectures_df['video_length'].fillna(0) / (1000 * 60)
+        
         print(f"Successfully loaded {len(lectures_df)} lectures and {len(merged_df)} interactions")
         return lectures_df, merged_df
     except FileNotFoundError as e:
@@ -155,6 +170,51 @@ def load_advanced_model(path='models/advanced_hybrid_model.pkl'):
                      'bundle_info', 'user_map', 'item_map', 'reverse_item_map'}
     if not required_keys.issubset(model_package):
         raise ValueError("Advanced hybrid model missing components.")
+
+    # Add duration information to bundle_info if not present
+    bundle_info = model_package['bundle_info']
+    if 'video_minutes' not in bundle_info.columns:
+        print("Adding duration information to bundle_info...")
+        
+        # Load the data to calculate durations
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        lectures_path = os.path.join(project_root, 'data', 'cleaned', 'cleaned_lectures.csv')
+        merged_path = os.path.join(project_root, 'data', 'cleaned', 'merged_cleaned_data.csv')
+        
+        lectures_df = pd.read_csv(lectures_path)
+        merged_df = pd.read_csv(merged_path)
+        
+        # Step 1: Extract numeric IDs from 'explanation_id' → from merged_df
+        lecture_to_bundle = merged_df[['bundle_id', 'explanation_id']].dropna().copy()
+        lecture_to_bundle['lecture_numeric_id'] = lecture_to_bundle['explanation_id'].str.extract(r'(\d+)')
+        
+        # Step 2: Extract numeric IDs from 'lecture_id' → from lectures_df
+        lectures_clean = lectures_df[['lecture_id', 'video_minutes']].dropna().copy()
+        lectures_clean['lecture_numeric_id'] = lectures_clean['lecture_id'].astype(str).str.extract(r'(\d+)')
+        
+        # Step 3: Join on numeric ID
+        merged = pd.merge(
+            lecture_to_bundle,
+            lectures_clean,
+            on='lecture_numeric_id',
+            how='left'
+        )
+        
+        # Step 4: Aggregate average durations per bundle
+        avg_durations = (
+            merged.dropna(subset=['video_minutes'])
+            .groupby('bundle_id')['video_minutes']
+            .mean()
+            .reset_index()
+        )
+        
+        # Step 5: Merge into bundle_info
+        bundle_info = bundle_info.merge(avg_durations, on='bundle_id', how='left')
+        bundle_info['video_minutes'] = bundle_info['video_minutes'].fillna(0).round(2)
+        
+        # Update the model package
+        model_package['bundle_info'] = bundle_info
+        print(f"Added duration information. Bundles with duration > 0: {len(bundle_info[bundle_info['video_minutes'] > 0])}")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     ncf_model = NCF(len(model_package['user_map']), len(model_package['item_map'])).to(device)

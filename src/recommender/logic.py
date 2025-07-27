@@ -41,7 +41,7 @@ def get_sbert_recommendations(user_id, merged_df, bundle_info, sbert_embeddings,
             'part': row['part_name'],
             'part_id': int(row['part']),
             'subjects': get_subject_categories(row['tags']),
-            'duration_minutes': 0,
+            'duration_minutes': float(row.get('video_minutes', row.get('duration_minutes', 0))),
             'type': 'bundle'
         })
     return results
@@ -76,7 +76,7 @@ def get_ncf_recommendations(user_id, recommender, item_map, reverse_item_map, bu
             'part': row['part_name'],
             'part_id': int(row['part']),
             'subjects': get_subject_categories(row['tags']),
-            'duration_minutes': 0,
+            'duration_minutes': float(row.get('video_minutes', row.get('duration_minutes', 0))),
             'type': 'bundle'
         })
     return results
@@ -141,7 +141,7 @@ def get_hybrid_advanced_recommendations(user_id, merged_df, sbert_embeddings, bu
             'part': bundle_row['part_name'],
             'part_id': int(row['part_id']),
             'subjects': get_subject_categories(bundle_row['tags']),
-            'duration_minutes': 0,
+            'duration_minutes': float(bundle_row.get('video_minutes', bundle_row.get('duration_minutes', 0))),
             'type': 'bundle'
         })
     return results
