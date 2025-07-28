@@ -202,16 +202,19 @@ def main():
         selected_user = st.selectbox("Select User", users)
         top_k = st.slider("Number of Recommendations", min_value=5, max_value=20, value=10)
 
-        # Clear recommendations if user changes
-        if selected_user != st.session_state.selected_user:
+        # Clear recommendations if user or slider value changes
+        if (selected_user != st.session_state.selected_user) or (top_k != st.session_state.top_k):
             st.session_state.selected_user = selected_user
+            st.session_state.top_k = top_k
             st.session_state.recommendations = {
                 'hybrid': [],
                 'content': [],
                 'collaborative': [],
                 'advanced_hybrid': []
             }
+        else:
             st.session_state.top_k = top_k
+
 
     if not selected_user:
         return
