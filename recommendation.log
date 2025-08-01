@@ -42,3 +42,26 @@ Traceback (most recent call last):
   File "C:\Users\karat\Downloads\Data-Driven-Personalized-Educational-Content-Recommendation-System\api\main.py", line 70, in recommend
     raise HTTPException(status_code=400, detail="Invalid recommendation type")
 fastapi.exceptions.HTTPException: 400: Invalid recommendation type
+2025-08-01 15:13:03,954 [INFO] Starting FastAPI application and loading models...
+2025-08-01 15:13:07,807 [INFO] Models loaded successfully.
+2025-08-01 15:13:14,801 [INFO] Health check endpoint called.
+2025-08-01 15:13:16,896 [INFO] Fetched 999 users.
+2025-08-01 15:13:18,930 [INFO] Fetching history for user_id=u100200
+2025-08-01 15:13:18,938 [INFO] User history found: 7 records
+2025-08-01 15:13:48,644 [INFO] Health check endpoint called.
+2025-08-01 15:13:50,671 [INFO] Fetched 999 users.
+2025-08-01 15:13:52,779 [INFO] Fetching history for user_id=u100200
+2025-08-01 15:13:52,797 [INFO] User history found: 7 records
+2025-08-01 15:13:54,929 [INFO] Received recommendation request: user=u100200, type=hybrid, top_k=10
+2025-08-01 15:13:54,951 [INFO] Successfully generated 10 hybrid recommendations for user=u100200
+2025-08-01 15:14:57,024 [INFO] Health check endpoint called.
+2025-08-01 15:14:57,503 [INFO] Health check endpoint called.
+2025-08-01 15:14:59,583 [INFO] Fetched 999 users.
+2025-08-01 15:15:01,651 [INFO] Fetching history for user_id=u100200
+2025-08-01 15:15:01,671 [INFO] User history found: 7 records
+2025-08-01 15:15:21,853 [INFO] Health check endpoint called.
+2025-08-01 15:15:23,908 [INFO] Fetched 999 users.
+2025-08-01 15:15:25,957 [INFO] Fetching history for user_id=u100200
+2025-08-01 15:15:25,973 [INFO] User history found: 7 records
+2025-08-01 15:15:28,139 [INFO] Received recommendation request: user=u100200, type=hybrid, top_k=5
+2025-08-01 15:15:28,173 [INFO] Successfully generated 5 hybrid recommendations for user=u100200
