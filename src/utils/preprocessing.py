@@ -8,7 +8,6 @@ import pickle
 import torch
 from src.recommender.ncf import NCF
 from sklearn.model_selection import train_test_split
-from functools import lru_cache
 
 def preprocess_content_text(text):
     """
@@ -30,7 +29,6 @@ import pickle
 import torch
 from src.recommender.ncf import NCF
 from sklearn.model_selection import train_test_split
-from functools import lru_cache
 
 def preprocess_content_text(text):
     if not isinstance(text, str):
@@ -238,7 +236,6 @@ Returns:
     }
 """
 
-@lru_cache(maxsize=1)
 def load_all_models():
     lectures_df, merged_df = load_clean_data()
     content_model = load_content_model('models/content_based_model_best.pkl')

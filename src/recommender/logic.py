@@ -145,3 +145,34 @@ def get_hybrid_advanced_recommendations(user_id, merged_df, sbert_embeddings, bu
             'type': 'bundle'
         })
     return results
+
+def get_svd_collaborative_recommendations(user_id, recommender, item_map, reverse_item_map, bundle_info, n=10):
+    """
+    Generate pure collaborative filtering recommendations using SVDHybridRecommender.
+    Assumes recommender was trained WITHOUT content similarity or with combine_weight=1.0.
+    """
+    if user_id not in recommender.user_map:
+        return []
+
+    user_idx = recommender.user_map[user_id]
+    known_items = np.where(recommender.train_matrix[user_idx] > 0)[0]
+    recs = recommender.get_recommendations(user_idx, n=n, exclude_seen=True, known_items=known_items)
+
+    results = []
+    for item_idx, score in recs:
+        b_id = reverse_item_map[item_idx]
+        row_match = bundle_info[bundle_info['bundle_id'] == b_id]
+        if row_match.empty:
+            continue
+        row = row_match.iloc[0]
+        results.append({
+            'item_id': b_id,
+            'score': round(float(score), 4),
+            'title': f"{row['part_name']}: {row['subject_category'].replace('_', ' ').title()}",
+            'part': row['part_name'],
+            'part_id': int(row['part']),
+            'subjects': get_subject_categories(row['tags']),
+            'duration_minutes': float(row.get('video_minutes', row.get('duration_minutes', 0))),
+            'type': 'bundle'
+        })
+    return results

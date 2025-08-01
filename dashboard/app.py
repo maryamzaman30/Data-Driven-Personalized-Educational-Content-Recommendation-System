@@ -154,37 +154,69 @@ def display_recommendation_list(title, recs):
     for idx, rec in enumerate(recs):
         render_recommendation_card(rec, idx)
 
-def display_overlap_distribution(hybrid, content, collab, advanced):
-    def get_ids(recs):
-        return {rec["item_id"] for rec in recs}
-    h_ids, c_ids, b_ids, a_ids = get_ids(hybrid), get_ids(content), get_ids(collab), get_ids(advanced)
 
+def display_overlap_distribution(hybrid, content, collab, advanced):
+    def extract_id(rec):
+        # Normalize all IDs to strings, prefer `item_id`, fallback to others
+        return str(
+            rec.get("item_id") or
+            rec.get("bundle_id") or
+            rec.get("lecture_id") or ""
+        ).strip().lower()
+
+    def get_unique_ids(recs):
+        return set(extract_id(r) for r in recs if extract_id(r))
+
+    # Get distinct IDs
+    h_ids = get_unique_ids(hybrid)
+    c_ids = get_unique_ids(content)
+    b_ids = get_unique_ids(collab)
+    a_ids = get_unique_ids(advanced)
+
+    # Set-based overlap computation
     overlap_df = pd.DataFrame({
         "Comparison": [
-            "Hybrid ∩ Content", "Hybrid ∩ Collaborative", "Hybrid ∩ Advanced",
-            "Content ∩ Collaborative", "Content ∩ Advanced", "Collaborative ∩ Advanced",
+            "Hybrid ∩ Content",
+            "Hybrid ∩ Collaborative",
+            "Hybrid ∩ Advanced",
+            "Content ∩ Collaborative",
+            "Content ∩ Advanced",
+            "Collaborative ∩ Advanced",
             "All Four"
         ],
         "Overlap Count": [
-            len(h_ids & c_ids), len(h_ids & b_ids), len(h_ids & a_ids),
-            len(c_ids & b_ids), len(c_ids & a_ids), len(b_ids & a_ids),
-            len(h_ids & c_ids & b_ids & a_ids)
+            len(h_ids & c_ids),
+            len(h_ids & b_ids),
+            len(h_ids & a_ids),
+            len(c_ids & b_ids),
+            len(c_ids & a_ids),
+            len(b_ids & a_ids),
+            len(h_ids & c_ids & b_ids & a_ids),
         ]
-    })
+    }).sort_values("Overlap Count", ascending=False)
+
     st.subheader("🔗 Recommendation Overlap")
     st.dataframe(overlap_df, use_container_width=True)
 
-    all_recs = []
-    for name, group in [("Hybrid", hybrid), ("Content", content), ("Collaborative", collab), ("Advanced Hybrid", advanced)]:
-        all_recs.extend({"Type": name, "Part": rec.get("part", "Unknown")} for rec in group)
-
-    if all_recs:
-        dist_df = pd.DataFrame(all_recs)
-        fig = px.histogram(dist_df, x="Part", color="Type", barmode="group",
-                           title="TOEIC Part Distribution by Recommendation Strategy",
-                           color_discrete_sequence=px.colors.qualitative.Plotly)
+    # Part Distribution Chart
+    part_records = []
+    for source, group in [
+        ("Hybrid", hybrid),
+        ("Content", content),
+        ("Collaborative", collab),
+        ("Advanced", advanced)
+    ]:
+        for rec in group:
+            part = rec.get("part")
+            if part:
+                part_records.append({"Type": source, "Part": part})
+    if part_records:
+        df_parts = pd.DataFrame(part_records)
+        fig = px.histogram(df_parts, x="Part", color="Type", barmode="group",
+                           title="TOEIC Part Distribution by Strategy")
         st.subheader("📊 Part Distribution")
         st.plotly_chart(fig, use_container_width=True)
+
 
 def main():
     st.title("📚 TOEIC Recommendation Dashboard")

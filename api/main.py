@@ -7,7 +7,8 @@ from src.utils.preprocessing import load_all_models
 from src.recommender.logic import (
     get_sbert_recommendations,
     get_ncf_recommendations,
-    get_hybrid_advanced_recommendations
+    get_hybrid_advanced_recommendations,
+    get_svd_collaborative_recommendations
 )
 
 app = FastAPI()
@@ -64,14 +65,13 @@ def recommend(req: RecommendationRequest):
             )}
 
         elif rec_type == "collaborative":
-            return {"recommendations": get_ncf_recommendations(
+            # Use SVDHybridRecommender in collaborative-only mode (no content similarity)
+            return {"recommendations": get_svd_collaborative_recommendations(
                 user_id=user_id,
                 recommender=models["hybrid_model"]["recommender"],
                 item_map=models["hybrid_model"]["item_map"],
                 reverse_item_map=models["hybrid_model"]["reverse_item_map"],
                 bundle_info=models["advanced_model"]["bundle_info"],
-                ncf_model=models["advanced_model"]["ncf_model"],
-                device=models["advanced_model"]["device"],
                 n=n
             )}
 
