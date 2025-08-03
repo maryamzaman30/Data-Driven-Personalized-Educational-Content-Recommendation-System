@@ -24,11 +24,11 @@ st.markdown("""
 .recommendation-card {
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 15px;
+    padding: 3px;
     margin-bottom: 10px;
     background: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
 .score-badge {
     background: #4CAF50;
     padding: 4px 8px;
