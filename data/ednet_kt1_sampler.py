@@ -46,7 +46,6 @@ def sample_kt1_logs(folder_path: str, sample_size: int = 1000) -> pd.DataFrame:
     combined_df = pd.concat(dataframes, ignore_index=True)
     return combined_df  # Return the final combined DataFrame
 
-
 # Sample KT1 dataset & save as 'sampled_kt1_logs.csv'
 # Call the function to sample logs
 sampled_df = sample_kt1_logs("./KT1", sample_size=1000)

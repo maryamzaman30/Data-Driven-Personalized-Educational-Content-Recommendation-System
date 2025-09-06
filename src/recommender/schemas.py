@@ -1,25 +1,45 @@
+# =========================================================
 # File: src/recommender/schemas.py
+# Description:
+#   Pydantic data models (schemas) for request and response validation
+#   in the recommendation API.
+#   Ensures strict input/output data structures for FastAPI endpoints.
+# =========================================================
 
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 
+# =========================================================
+# 1. Request Models
+# =========================================================
 
+# Request model for generating recommendations
 class RecommendationRequest(BaseModel):
-    user_id: str
-    n_recommendations: int = 10
-    recommendation_type: str = "hybrid"
+    user_id: str  # User identifier
+    n_recommendations: int = 10  # Number of items to recommend
+    recommendation_type: str = "hybrid"  # Algorithm type
 
+# Request model for retrieving user history
+class UserHistoryRequest(BaseModel):
+    user_id: str  # User identifier
+    limit: int = 50  # Max number of history items
 
+# =========================================================
+# 2. Response Models
+# =========================================================
+
+# Single recommended item schema
 class Recommendation(BaseModel):
-    item_id: str
-    score: float
-    title: str
-    part: str
-    part_id: int
-    subjects: List[str]
-    duration_minutes: float
-    type: str
+    item_id: str  # Unique item ID
+    score: float  # Relevance score
+    title: str  # Item title
+    part: str  # Curriculum part name
+    part_id: int  # Part identifier
+    subjects: List[str]  # Associated subjects
+    duration_minutes: float  # Estimated duration
+    type: str  # Content type (e.g., lecture, quiz)
 
+    # Example payload for documentation
     model_config = ConfigDict(
         json_schema_extra={
             "examples": [
@@ -37,28 +57,23 @@ class Recommendation(BaseModel):
         }
     )
 
-
+# Response model for recommendation results
 class RecommendationResponse(BaseModel):
-    user_id: str
-    recommendations: List[Recommendation]
-    recommendation_type: str
+    user_id: str  # User identifier
+    recommendations: List[Recommendation]  # List of recommended items
+    recommendation_type: str  # Algorithm type used
 
-
-class UserHistoryRequest(BaseModel):
-    user_id: str
-    limit: int = 50
-
-
+# Single user interaction history item
 class HistoryItem(BaseModel):
-    question_id: str
-    bundle_id: str
-    timestamp: str
-    is_correct: bool
-    elapsed_time: float
-    part: str
-    subjects: List[str]
+    question_id: str  # Question attempted
+    bundle_id: str  # Content bundle ID
+    timestamp: str  # Interaction timestamp
+    is_correct: bool  # Answer correctness
+    elapsed_time: float  # Time spent
+    part: str  # Curriculum part name
+    subjects: List[str]  # Associated subjects
 
-
+# Response model for user history
 class UserHistoryResponse(BaseModel):
-    user_id: str
-    history: List[HistoryItem]
+    user_id: str  # User identifier
+    history: List[HistoryItem]  # List of past interactions

@@ -1,19 +1,30 @@
+# =========================================================
 # File: src/recommender/hybrid.py
+# Description: SVD-based Hybrid Recommender System
+#   Combines Collaborative Filtering (via SVD) with
+#   optional Content-Based similarity scores.
+# =========================================================
 
 import numpy as np
 from scipy.sparse.linalg import svds
-import numpy as np
 from scipy.sparse import csr_matrix
 import logging
 
-# Configure logging
+# =========================================================
+# 1. Configure Logging
+# =========================================================
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class SVDHybridRecommender:
-    """SVD-based hybrid recommender system"""
+# =========================================================
+# 2. SVD-based Hybrid Recommender System Class
+# =========================================================
 
+class SVDHybridRecommender:
+    
     def __init__(self, n_factors=20, combine_weight=0.7):
+        # Set model hyperparameters and placeholders for data and factors
         self.n_factors = n_factors
         self.combine_weight = combine_weight
         self.user_factors = None
@@ -25,20 +36,26 @@ class SVDHybridRecommender:
         self.item_map = None
         self.reverse_item_map = None
 
+    # ------------------------------------------------------
+    # Initialization
+    # ------------------------------------------------------
     def initialize(self, train_matrix, user_map, item_map, reverse_item_map):
-        """Initialize the recommender with required matrices and mappings"""
+        # Initialize the recommender with required matrices and mappings
         self.train_matrix = train_matrix
         self.user_map = user_map
         self.item_map = item_map
         self.reverse_item_map = reverse_item_map
 
     def validate(self):
-        """Check if the recommender is properly initialized"""
+        # Check if the recommender is properly initialized
         if self.train_matrix is None or self.user_map is None or self.item_map is None:
             raise ValueError("Recommender not properly initialized")
         if self.user_factors is None or self.item_factors is None:
             raise ValueError("Model not trained")
 
+    # ------------------------------------------------------
+    # Model Training
+    # ------------------------------------------------------
     def fit(self, ratings_matrix, content_similarity=None):
         self.content_similarity = content_similarity
         self.mean_rating = np.mean(ratings_matrix[ratings_matrix > 0])
@@ -75,32 +92,42 @@ class SVDHybridRecommender:
             self.item_factors = np.ones((ratings_matrix.shape[1], n_factors))
             logger.warning("Using fallback factors due to SVD computation error")
 
+    # ------------------------------------------------------
+    # Prediction & Recommendation
+    # ------------------------------------------------------
     def predict_rating(self, user_idx, item_idx):
+        # Return mean rating if factors are not initialized
         if self.user_factors is None or self.item_factors is None:
             return self.mean_rating
+        # Predict rating using dot product of user and item factors
         return np.dot(self.user_factors[user_idx], self.item_factors[item_idx])
 
     def _get_content_score(self, known_items, item_idx):
+        # Return 0 if no content similarity or known items
         if self.content_similarity is None or len(known_items) == 0:
             return 0.0
+        # Compute average similarity score with known items
         return np.mean([self.content_similarity[item_idx, idx] for idx in known_items])
 
     def get_recommendations(self, user_idx, n=10, exclude_seen=True, known_items=None):
         try:
-            self.validate()
+            self.validate()  # Ensure model is properly initialized
             
+            # Compute collaborative filtering scores
             cf_scores = np.dot(self.user_factors[user_idx], self.item_factors.T)
             final_scores = cf_scores.copy()
 
-            # Convert numpy arrays to lists for safe handling
+            # Convert known_items to list if it's a numpy array
             if isinstance(known_items, np.ndarray):
                 known_items = known_items.tolist()
 
+            # Blend CF and content-based scores if applicable
             if self.content_similarity is not None and known_items is not None and len(known_items) > 0:
                 for i in range(len(final_scores)):
                     cb_score = self._get_content_score(known_items, i)
                     final_scores[i] = (self.combine_weight * cf_scores[i]) + ((1 - self.combine_weight) * cb_score)
 
+            # Filter out seen items if required
             all_items = np.arange(len(final_scores))
             if exclude_seen and known_items is not None and len(known_items) > 0:
                 mask = np.ones_like(final_scores, dtype=bool)
@@ -108,13 +135,14 @@ class SVDHybridRecommender:
                 all_items = all_items[mask]
                 final_scores = final_scores[mask]
 
+            # Select top-N items based on final scores
             top_indices = np.argsort(-final_scores)[:n]
             top_items = all_items[top_indices]
             top_scores = final_scores[top_indices]
 
             logger.info(f"Generated {len(top_items)} recommendations for user {user_idx}")
             return list(zip(top_items, top_scores))
-            
+
         except Exception as e:
             logger.error(f"Error generating recommendations: {str(e)}")
             return []
