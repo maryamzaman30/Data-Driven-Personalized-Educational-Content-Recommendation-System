@@ -1,12 +1,30 @@
+# =========================================================
+# File: tests/test_edge_cases.py
+# Description:
+#   Comprehensive pytest suite for testing:
+#     - Extreme data scenarios
+#     - Boundary conditions
+#     - Error handling
+#     - Model-specific edge cases
+#     - System limit handling
+# =========================================================
+
 import pytest
 import numpy as np
 import pandas as pd
 import torch
 from unittest.mock import patch, MagicMock
+
+# Project imports
 from src.recommender.hybrid import SVDHybridRecommender
 from src.recommender.ncf import NCF
 from src.evaluation.metrics import precision_at_k, recall_at_k, rmse_score
 from src.utils.preprocessing import prepare_matrices, get_users_for_eval
+
+
+# =========================================================
+# 1. Extreme Data Scenarios
+# =========================================================
 
 class TestExtremeDataScenarios:
     """Test suite for extreme data scenarios"""
@@ -116,6 +134,10 @@ class TestExtremeDataScenarios:
         # Most interactions should be preserved (accounting for train/test split)
         assert np.sum(train_matrix > 0) > n_interactions * 0.6
 
+# =========================================================
+# 2. Boundary Conditions
+# =========================================================
+
 class TestBoundaryConditions:
     """Test suite for boundary conditions"""
     
@@ -183,6 +205,10 @@ class TestBoundaryConditions:
         assert len(item_map) > 0
         assert train_matrix.shape[0] > 0
         assert train_matrix.shape[1] > 0
+
+# =========================================================
+# 3. Error Conditions
+# =========================================================
 
 class TestErrorConditions:
     """Test suite for error conditions and edge cases"""
@@ -268,6 +294,10 @@ class TestErrorConditions:
             # Should handle gracefully
             assert True
 
+# =========================================================
+# 4. Model Edge Cases
+# =========================================================
+
 class TestModelEdgeCases:
     """Test suite for model-specific edge cases"""
     
@@ -341,6 +371,10 @@ class TestModelEdgeCases:
         assert rmse > 0
         assert not np.isnan(rmse)
         assert not np.isinf(rmse)
+
+# =========================================================
+# 5. System Limits & Constraints
+# =========================================================
 
 class TestSystemLimits:
     """Test suite for system limits and constraints"""

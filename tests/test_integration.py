@@ -1,17 +1,37 @@
+# =========================================================
+# File: tests/test_integration.py
+# Description:
+#   Comprehensive test suite for:
+#     - Recommendation pipelines
+#     - API endpoints
+#     - Dashboard integration
+#     - Error handling
+# =========================================================
+
 import pytest
 import requests
 import pandas as pd
 import numpy as np
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
+
+# Import recommendation functions
 from src.recommender.logic import (
     get_sbert_recommendations,
     get_ncf_recommendations,
     get_hybrid_advanced_recommendations,
     get_svd_collaborative_recommendations
 )
+
+# Import model loader
 from src.utils.preprocessing import load_all_models
+
+# Import FastAPI app
 from api.main import app
+
+# =========================================================
+# 1. Fixtures
+# =========================================================
 
 @pytest.fixture
 def sample_data():
@@ -47,6 +67,10 @@ def sample_bundle_info():
 def client():
     """Create test client for API testing"""
     return TestClient(app)
+
+# =========================================================
+# 2. Recommendation Pipeline Tests
+# =========================================================
 
 class TestFullRecommendationPipeline:
     """Test suite for complete recommendation pipeline"""
@@ -159,6 +183,10 @@ class TestFullRecommendationPipeline:
                         assert 'content_model' in models
                         assert 'hybrid_model' in models
                         assert 'advanced_model' in models
+
+# =========================================================
+# 3. API Endpoint Tests
+# =========================================================
 
 class TestAPIEndpoints:
     """Test suite for FastAPI endpoints"""
@@ -279,6 +307,10 @@ class TestAPIEndpoints:
                 assert response.status_code == 500
                 assert "Invalid recommendation type" in response.json()["detail"]
 
+# =========================================================
+# 4. Dashboard Integration Tests
+# =========================================================
+
 class TestDashboardIntegration:
     """Test suite for Streamlit dashboard integration"""
     
@@ -334,6 +366,10 @@ class TestDashboardIntegration:
             assert "bundle_id" in recommendations[0]
             assert "score" in recommendations[0]
             assert "title" in recommendations[0]
+
+# =========================================================
+# 5. Error Handling Tests
+# =========================================================
 
 class TestErrorHandling:
     """Test suite for error handling in the pipeline"""

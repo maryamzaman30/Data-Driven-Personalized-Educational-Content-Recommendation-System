@@ -2,9 +2,9 @@
 # & merges them into a single DataFrame. The sampled dataset is then saved as sampled_kt1_logs.csv
 
 # Import necessary libraries
-import pandas as pd # For working with structured data (DataFrames)
-import random # For selecting files randomly
-from pathlib import Path # For handling file paths in a platform-independent way
+import pandas as pd
+import random 
+from pathlib import Path 
 
 def sample_kt1_logs(folder_path: str, sample_size: int = 1000) -> pd.DataFrame:
     """

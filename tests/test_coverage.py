@@ -1,3 +1,11 @@
+# =========================================================
+# File: tests/test_coverage.py
+# Description:
+#   Pytest test suite for verifying code coverage across the `src` package.
+#   Includes tests for API endpoints, core recommendation logic, metrics,
+#   preprocessing utilities, error handling, and edge cases.
+# =========================================================
+
 import pytest
 import coverage
 import sys
@@ -6,20 +14,26 @@ from pathlib import Path
 from src.evaluation.metrics import precision_at_k, recall_at_k, rmse_score
 from src.utils.preprocessing import prepare_matrices
 
+# =========================================================
+# 1. Configure Coverage
+# =========================================================
 
-
-# Configure coverage
+# Initialize coverage analysis for the 'src' directory
 cov = coverage.Coverage(
     source=['src'],
     omit=[
-        '*/tests/*',
-        '*/__pycache__/*',
-        '*/venv/*',
-        '*/env/*',
-        r'*/\.venv/*',
-        r'*/\.env/*'
+        '*/tests/*', # Exclude test files
+        '*/__pycache__/*', # Exclude Python cache files
+        '*/venv/*', # Exclude virtual environment folders
+        '*/env/*', # Exclude alternative env folders
+        r'*/\.venv/*', # Exclude hidden .venv folders (regex)
+        r'*/\.env/*' # Exclude hidden .env folders (regex)
     ]
 )
+
+# =========================================================
+# 2. General Coverage Tests
+# =========================================================
 
 class TestCoverage:
     """Test suite for ensuring comprehensive code coverage"""
@@ -61,6 +75,9 @@ class TestCoverage:
         # Check that we have coverage data
         assert cov.get_data()
     
+    # -------------------------
+    # Critical Function Coverage
+    # -------------------------
     def test_critical_functions_coverage(self):
         """Test coverage of critical functions"""
         cov.start()
@@ -109,6 +126,9 @@ class TestCoverage:
         assert len(user_map) > 0
         assert len(item_map) > 0
     
+    # -------------------------
+    # API Endpoint Coverage
+    # -------------------------
     def test_api_endpoints_coverage(self):
         """Test coverage of API endpoints"""
         cov.start()
@@ -145,7 +165,10 @@ class TestCoverage:
         
         cov.stop()
         cov.save()
-    
+        
+    # -------------------------
+    # Error Handling Coverage
+    # -------------------------
     def test_error_handling_coverage(self):
         """Test coverage of error handling paths"""
         cov.start()
@@ -173,6 +196,9 @@ class TestCoverage:
         cov.stop()
         cov.save()
     
+    # -------------------------
+    # Edge Case Coverage
+    # -------------------------
     def test_edge_cases_coverage(self):
         """Test coverage of edge cases"""
         cov.start()
@@ -204,6 +230,9 @@ class TestCoverage:
         cov.stop()
         cov.save()
     
+    # -------------------------
+    # Performance Monitoring Coverage
+    # -------------------------
     def test_performance_monitoring_coverage(self):
         """Test coverage of performance monitoring code"""
         cov.start()
@@ -227,6 +256,9 @@ class TestCoverage:
         # Verify monitoring worked
         assert isinstance(memory_change, int)
     
+    # -------------------------
+    # Coverage Report Generation
+    # -------------------------
     def test_coverage_report_generation(self):
         """Test that coverage reports can be generated"""
         cov.start()
@@ -245,6 +277,10 @@ class TestCoverage:
         # Check that report files were created
         assert Path('htmlcov').exists()
         assert Path('htmlcov/index.html').exists()
+
+# =========================================================
+# 3. Coverage Threshold Tests
+# =========================================================
 
 class TestCoverageThresholds:
     """Test suite for coverage thresholds"""

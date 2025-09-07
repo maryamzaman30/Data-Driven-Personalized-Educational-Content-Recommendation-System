@@ -1,3 +1,20 @@
+# =========================================================
+# File: tests/test_performance.py
+# Description:
+#   Performance benchmarking, scalability, and regression testing for:
+#     - SVDHybridRecommender
+#     - Neural Collaborative Filtering (NCF)
+#     - Evaluation metrics
+#   Includes tests for:
+#     - Training speed
+#     - Inference latency
+#     - Memory usage
+#     - Scalability with dataset size
+#     - Concurrency performance
+#     - CPU & memory efficiency
+#     - Performance regression detection
+# =========================================================
+
 import pytest
 import time
 import psutil
@@ -10,18 +27,26 @@ from src.recommender.ncf import NCF
 from src.evaluation.metrics import precision_at_k, recall_at_k, rmse_score
 from src.utils.preprocessing import prepare_matrices
 
+# =========================================================
+# 1. Fixtures
+# =========================================================
+
 @pytest.fixture
 def large_dataset():
-    """Create large dataset for performance testing"""
+    """
+    Create a large synthetic dataset for performance testing.
+    - 1,000 users
+    - 500 items
+    - 50,000 interactions
+    """
     np.random.seed(42)
     n_users = 1000
     n_items = 500
     n_interactions = 50000
-    
+
     user_ids = np.random.choice(n_users, n_interactions)
     item_ids = np.random.choice(n_items, n_interactions)
-    ratings = np.random.randint(1, 6, n_interactions)
-    
+
     return pd.DataFrame({
         'user_id': [f'u{i}' for i in user_ids],
         'bundle_id': [f'b{i}' for i in item_ids],
@@ -30,6 +55,10 @@ def large_dataset():
         'elapsed_time': np.random.randint(5, 60, n_interactions),
         'timestamp': range(n_interactions)
     })
+
+# =========================================================
+# 2. Performance Benchmarks
+# =========================================================
 
 class TestPerformanceBenchmarks:
     """Test suite for performance benchmarking"""
@@ -178,6 +207,10 @@ class TestPerformanceBenchmarks:
             growth_factor = training_times[i] / training_times[i-1]
             assert growth_factor < 6.0  # Should not grow more than 6x for 2x data size
 
+# =========================================================
+# 3. Metrics Performance
+# =========================================================
+
 class TestMetricsPerformance:
     """Test suite for evaluation metrics performance"""
     
@@ -227,6 +260,10 @@ class TestMetricsPerformance:
         assert isinstance(rmse, float)
         
         print(f"RMSE calculation time (100x): {rmse_time:.3f} seconds")
+
+# =========================================================
+# 4. Concurrent Performance
+# =========================================================
 
 class TestConcurrentPerformance:
     """Test suite for concurrent operation performance"""
@@ -287,6 +324,10 @@ class TestConcurrentPerformance:
         
         print(f"Concurrent recommendations time: {total_time:.2f} seconds")
         print(f"Successful recommendations: {successful_recommendations}/{len(test_users)}")
+
+# =========================================================
+# 5. Resource Utilization
+# =========================================================
 
 class TestResourceUtilization:
     """Test suite for resource utilization monitoring"""
@@ -351,6 +392,10 @@ class TestResourceUtilization:
         assert memory_increase < 100  # Less than 100MB for model + inference
         print(f"Model memory usage: {model_memory - initial_memory:.1f} MB")
         print(f"Peak memory usage: {memory_increase:.1f} MB")
+
+# =========================================================
+# 6. Performance Regression
+# =========================================================
 
 class TestPerformanceRegression:
     """Test suite for performance regression detection"""

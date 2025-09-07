@@ -1,4 +1,9 @@
+# =========================================================
 # File: tests/test_schemas.py
+# Description:
+#   Unit tests for Pydantic schemas used in the recommendation API.
+#   Validates correct object creation, field constraints, and error handling.
+# =========================================================
 
 import pytest
 from pydantic import ValidationError
@@ -11,15 +16,31 @@ from src.recommender.schemas import (
     UserHistoryResponse,
 )
 
+# =========================================================
+# 1. RecommendationRequest Model Tests
+# =========================================================
 
 def test_recommendation_request_valid():
-    req = RecommendationRequest(user_id="u123", n_recommendations=5, recommendation_type="hybrid")
+    """
+    Test that a valid RecommendationRequest object is created successfully.
+    """
+    req = RecommendationRequest(
+        user_id="u123",
+        n_recommendations=5,
+        recommendation_type="hybrid"
+    )
     assert req.user_id == "u123"
     assert req.n_recommendations == 5
     assert req.recommendation_type == "hybrid"
 
+# =========================================================
+# 2. Recommendation Model Tests
+# =========================================================
 
 def test_recommendation_model():
+    """
+    Test creation of a Recommendation object with all valid fields.
+    """
     rec = Recommendation(
         item_id="b456",
         score=0.92,
@@ -34,7 +55,30 @@ def test_recommendation_model():
     assert isinstance(rec.subjects, list)
 
 
+def test_recommendation_invalid_score():
+    """
+    Test that an invalid score type raises a validation error.
+    """
+    with pytest.raises(ValidationError):
+        Recommendation(
+            item_id="b001",
+            score="bad_score",  # Invalid: should be a float
+            title="Bad",
+            part="A",
+            part_id=1,
+            subjects=[],
+            duration_minutes=2.0,
+            type="quiz"
+        )
+
+# =========================================================
+# 3. RecommendationResponse Model Tests
+# =========================================================
+
 def test_recommendation_response():
+    """
+    Test that a RecommendationResponse with nested Recommendation objects works.
+    """
     response = RecommendationResponse(
         user_id="u1",
         recommendation_type="hybrid",
@@ -54,13 +98,25 @@ def test_recommendation_response():
     assert response.user_id == "u1"
     assert len(response.recommendations) == 1
 
+# =========================================================
+# 4. UserHistoryRequest Model Tests
+# =========================================================
 
 def test_user_history_request():
+    """
+    Test that UserHistoryRequest correctly stores user_id and limit.
+    """
     req = UserHistoryRequest(user_id="u42", limit=20)
     assert req.limit == 20
 
+# =========================================================
+# 5. HistoryItem & UserHistoryResponse Tests
+# =========================================================
 
 def test_history_item_and_response():
+    """
+    Test that HistoryItem and UserHistoryResponse work together.
+    """
     item = HistoryItem(
         question_id="q789",
         bundle_id="b1",
@@ -72,17 +128,3 @@ def test_history_item_and_response():
     )
     resp = UserHistoryResponse(user_id="u5", history=[item])
     assert len(resp.history) == 1
-
-
-def test_recommendation_invalid_score():
-    with pytest.raises(ValidationError):
-        Recommendation(
-            item_id="b001",
-            score="bad_score",
-            title="Bad",
-            part="A",
-            part_id=1,
-            subjects=[],
-            duration_minutes=2.0,
-            type="quiz"
-        )
