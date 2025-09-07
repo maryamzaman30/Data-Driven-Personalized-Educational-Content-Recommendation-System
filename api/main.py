@@ -5,23 +5,22 @@
 #   (Content-based, Collaborative, Hybrid, Advanced Hybrid).
 # =========================================================
 
-# Import FastAPI framework and HTTP exception handling
+# Standard Library Imports
+import logging
+
+# Third-party Libraries
 from fastapi import FastAPI, HTTPException
-# Import middleware to handle Cross-Origin Resource Sharing (CORS)
 from fastapi.middleware.cors import CORSMiddleware
-# Import the request schema for recommendation input
+
+# Project Imports
 from src.recommender.schemas import RecommendationRequest
-# Import function to load all required ML models
 from src.utils.preprocessing import load_all_models
-# Import different recommendation logic functions
 from src.recommender.logic import (
     get_sbert_recommendations,               # Semantic-based recommendations
     get_ncf_recommendations,                 # Neural collaborative filtering
     get_hybrid_advanced_recommendations,     # Hybrid model combining multiple strategies
     get_svd_collaborative_recommendations    # Matrix factorization-based recommendations
 )
-# Import logging module to track app activity
-import logging
 
 # =========================================================
 # 1. Logging Setup

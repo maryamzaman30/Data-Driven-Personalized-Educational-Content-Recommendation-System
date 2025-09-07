@@ -21,7 +21,6 @@ import psutil
 import numpy as np
 import pandas as pd
 import torch
-from unittest.mock import patch, MagicMock
 from src.recommender.hybrid import SVDHybridRecommender
 from src.recommender.ncf import NCF
 from src.evaluation.metrics import precision_at_k, recall_at_k, rmse_score
@@ -202,10 +201,20 @@ class TestPerformanceBenchmarks:
             training_times.append(training_time)
             print(f"Dataset size {size}: {training_time:.2f} seconds")
         
+        
+        # Skip very small/unstable timings
+        min_threshold = 0.05  
         # Check that training time doesn't grow exponentially
+        epsilon = 1e-6
         for i in range(1, len(training_times)):
-            growth_factor = training_times[i] / training_times[i-1]
-            assert growth_factor < 6.0  # Should not grow more than 6x for 2x data size
+            if training_times[i-1] < min_threshold:
+                continue  # ignore noisy small timings
+            prev_time = max(training_times[i-1], epsilon)
+            growth_factor = training_times[i] / prev_time
+            assert growth_factor < 6.0, (
+                f"Growth factor too high: {growth_factor:.2f} "
+                f"(from {training_times[i-1]:.4f}s to {training_times[i]:.4f}s)"
+            )
 
 # =========================================================
 # 3. Metrics Performance

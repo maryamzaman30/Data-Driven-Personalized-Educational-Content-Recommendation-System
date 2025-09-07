@@ -6,10 +6,7 @@
 #   preprocessing utilities, error handling, and edge cases.
 # =========================================================
 
-import pytest
 import coverage
-import sys
-import os
 from pathlib import Path
 from src.evaluation.metrics import precision_at_k, recall_at_k, rmse_score
 from src.utils.preprocessing import prepare_matrices
@@ -225,7 +222,11 @@ class TestCoverage:
         # Test metrics with edge cases
         precision_at_k([], [1, 2, 3], k=10)
         recall_at_k([1, 2, 3], [], k=10)
-        rmse_score([], [])
+        try:
+            rmse_score([], [])
+        except ValueError:
+            # Expected since sklearn requires at least 1 sample
+            pass
         
         cov.stop()
         cov.save()

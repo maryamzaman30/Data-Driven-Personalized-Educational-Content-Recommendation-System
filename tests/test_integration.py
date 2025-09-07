@@ -9,7 +9,6 @@
 # =========================================================
 
 import pytest
-import requests
 import pandas as pd
 import numpy as np
 from unittest.mock import patch, MagicMock
@@ -18,7 +17,6 @@ from fastapi.testclient import TestClient
 # Import recommendation functions
 from src.recommender.logic import (
     get_sbert_recommendations,
-    get_ncf_recommendations,
     get_hybrid_advanced_recommendations,
     get_svd_collaborative_recommendations
 )

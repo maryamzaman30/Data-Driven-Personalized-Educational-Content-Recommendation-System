@@ -9,7 +9,6 @@
 #       - enrich_recommendations_with_metadata
 # =========================================================
 
-import pytest
 import pandas as pd
 from src.utils.mappings import (
     get_part_name,

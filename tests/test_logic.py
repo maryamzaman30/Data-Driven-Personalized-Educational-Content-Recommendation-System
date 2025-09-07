@@ -8,7 +8,6 @@
 #   Uses mocks and minimal test data for fast execution.
 # =========================================================
 
-import pytest
 import pandas as pd
 import torch
 from unittest.mock import MagicMock

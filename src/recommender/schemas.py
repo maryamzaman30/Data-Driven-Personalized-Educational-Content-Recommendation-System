@@ -6,7 +6,7 @@
 #   Ensures strict input/output data structures for FastAPI endpoints.
 # =========================================================
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict
 from typing import List
 
 # =========================================================

@@ -10,9 +10,7 @@
 
 import pytest
 import numpy as np
-import pandas as pd
 import torch
-from unittest.mock import MagicMock, patch
 from src.recommender.hybrid import SVDHybridRecommender
 from src.recommender.ncf import NCF
 from sklearn.feature_extraction.text import TfidfVectorizer
