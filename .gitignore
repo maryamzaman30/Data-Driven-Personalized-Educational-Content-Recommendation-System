@@ -86,7 +86,6 @@ local_settings.py
 *.joblib
 
 # Logs and databases
-*.log
 *.sql
 *.sqlite
 
