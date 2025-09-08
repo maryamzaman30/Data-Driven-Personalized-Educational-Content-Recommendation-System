@@ -146,6 +146,10 @@ project-root/
 
 - [EdNet Dataset (KT1 & Contents)](https://github.com/riiid/ednet)
 
+## Test documentations
+
+To read about the testing strategy & test suite for this project, refer to the [README file about tests](tests/README%20tests.md).
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
