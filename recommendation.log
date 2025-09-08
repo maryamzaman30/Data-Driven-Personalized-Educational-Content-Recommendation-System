@@ -511,3 +511,10 @@ fastapi.exceptions.HTTPException: 400: Invalid recommendation type
 2025-09-07 20:28:52,151 [INFO] Successfully generated 5 collaborative recommendations for user=u100200
 2025-09-08 13:33:02,515 [INFO] Starting FastAPI application and loading models...
 2025-09-08 13:33:44,342 [INFO] Models loaded successfully.
+2025-09-08 13:43:08,994 [INFO] Starting FastAPI application and loading models...
+2025-09-08 13:43:12,781 [INFO] Models loaded successfully.
+2025-09-08 13:43:22,299 [INFO] Health check endpoint called.
+2025-09-08 13:43:44,285 [INFO] Fetched 999 users.
+2025-09-08 14:23:38,487 [INFO] Starting FastAPI application and loading models...
+2025-09-08 14:23:42,914 [INFO] Models loaded successfully.
+2025-09-08 14:26:37,952 [INFO] Fetched 999 users.

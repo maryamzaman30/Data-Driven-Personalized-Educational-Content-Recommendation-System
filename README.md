@@ -131,16 +131,52 @@ project-root/
 
 3. Open your browser to the URL shown in the terminal (typically `http://localhost:8501`)
 
-## API Endpoints
+## API Testing
+
+### Available Endpoints
 
 - `GET /health` - Health check
 - `GET /users` - List all users
 - `GET /users/{user_id}/history` - Get user interaction history
 - `POST /recommend` - Get recommendations
   - Parameters:
-    - `user_id`: Target user ID
+    - `user_id`: Target user ID (e.g., 'u105425')
     - `method`: Recommendation method ('content', 'collaborative', 'hybrid', 'advanced_hybrid')
     - `n`: Number of recommendations to return
+
+### Testing with Browser
+
+You can test GET endpoints directly in your browser:
+- Health check: `http://127.0.0.1:8000/health`
+- List users: `http://127.0.0.1:8000/users`
+
+### Testing POST Requests with PowerShell
+
+For the recommendation endpoint, use this PowerShell command:
+
+```powershell
+$body = @{
+    user_id = "u105425"
+    method = "content"
+    n = 5
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/recommend" `
+    -Method Post `
+    -Body $body `
+    -ContentType "application/json"
+
+# Display the response
+$response
+```
+
+### Testing with API Documentation
+
+For interactive testing and documentation:
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- ReDoc: `http://127.0.0.1:8000/redoc`
+
+Note: The root URL (`http://127.0.0.1:8000/`) will return a 404 error as it's not a defined endpoint.
 
 ## Data Sources
 
