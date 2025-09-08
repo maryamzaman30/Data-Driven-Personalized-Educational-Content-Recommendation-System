@@ -170,8 +170,6 @@ $response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/recommend" `
 $response
 ```
 
-Note: The root URL (`http://127.0.0.1:8000/`) will return a 404 error as it's not a defined endpoint.
-
 ## Data Sources
 
 - [EdNet Dataset (KT1 & Contents)](https://github.com/riiid/ednet)
