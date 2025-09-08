@@ -73,7 +73,28 @@ models = load_all_models()
 logger.info("Models loaded successfully.")
 
 # =========================================================
-# 4. Health Check Endpoint
+# 4. Root Endpoint
+# =========================================================
+
+# Define a GET endpoint at the root URL to provide API documentation
+@app.get("/")
+async def root():
+    """
+    Root endpoint that provides basic API information and available endpoints.
+    """
+    return {
+        "message": "Educational Content Recommendation System API",
+        "endpoints": {
+            "GET /": "This documentation",
+            "GET /health": "Health check endpoint",
+            "GET /users": "List all available users",
+            "GET /user/{user_id}/history": "Get user interaction history",
+            "POST /recommendations": "Get recommendations (requires JSON body with user_id, method, n)"
+        },
+    }
+
+# =========================================================
+# 5. Health Check Endpoint
 # =========================================================
 
 # Define a GET endpoint at /health to check if the API is running
