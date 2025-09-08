@@ -137,7 +137,7 @@ project-root/
 
 - `GET /health` - Health check
 - `GET /users` - List all users
-- `GET /users/{user_id}/history` - Get user interaction history
+- `GET /user/{user_id}/history` - Get user interaction history e.g. `http://127.0.0.1:8000/user/u101324/history` 
 - `POST /recommend` - Get recommendations
   - Parameters:
     - `user_id`: Target user ID (e.g., 'u105425')
@@ -169,12 +169,6 @@ $response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/recommend" `
 # Display the response
 $response
 ```
-
-### Testing with API Documentation
-
-For interactive testing and documentation:
-- Swagger UI: `http://127.0.0.1:8000/docs`
-- ReDoc: `http://127.0.0.1:8000/redoc`
 
 Note: The root URL (`http://127.0.0.1:8000/`) will return a 404 error as it's not a defined endpoint.
 
