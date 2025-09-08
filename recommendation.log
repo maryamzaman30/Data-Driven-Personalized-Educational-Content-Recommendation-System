@@ -509,3 +509,5 @@ fastapi.exceptions.HTTPException: 400: Invalid recommendation type
 2025-09-07 20:28:52,101 [INFO] Received recommendation request: user=u100200, type=collaborative, top_k=5
 2025-09-07 20:28:52,151 [INFO] Generated 5 recommendations for user 0
 2025-09-07 20:28:52,151 [INFO] Successfully generated 5 collaborative recommendations for user=u100200
+2025-09-08 13:33:02,515 [INFO] Starting FastAPI application and loading models...
+2025-09-08 13:33:44,342 [INFO] Models loaded successfully.
