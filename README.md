@@ -89,6 +89,7 @@ project-root/
    git clone https://github.com/maryamzaman30/Data-Driven-Personalized-Educational-Content-Recommendation-System/tree/main
    cd Data-Driven-Personalized-Educational-Content-Recommendation-System
    ```
+> Make sure to clone the repository instead of downloading it. If you download it, the `.pkl` files will be corrupted. Also, ensure that you have Git LFS installed before cloning.
 
 2. Create and activate a virtual environment:
    ```bash
