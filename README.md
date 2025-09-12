@@ -186,12 +186,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - The EdNet dataset provided by Riiid!
-<<<<<<< HEAD
-<<<<<<< HEAD
 - Open-source libraries used in this project
-=======
-- Open-source libraries used in this project
->>>>>>> 4adf5ff (Updated readme file and added runtime.txt)
-=======
-- Open-source libraries used in this project
->>>>>>> b3e20d6 (Update README, requirements, and remove recommendation.log/runtime.txt)
