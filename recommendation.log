@@ -620,3 +620,7 @@ fastapi.exceptions.HTTPException: 400: Invalid recommendation type
 2025-09-12 17:06:42,380 [INFO] Fetched 999 users.
 2025-09-12 17:06:44,441 [INFO] Fetching history for user_id=u100200
 2025-09-12 17:06:44,453 [INFO] User history found: 7 records
+2025-09-12 17:27:23,571 [INFO] Health check endpoint called.
+2025-09-12 17:27:25,629 [INFO] Fetched 999 users.
+2025-09-12 17:27:27,688 [INFO] Fetching history for user_id=u100200
+2025-09-12 17:27:27,697 [INFO] User history found: 7 records
