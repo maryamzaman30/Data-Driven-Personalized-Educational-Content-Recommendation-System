@@ -86,7 +86,7 @@ project-root/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/maryamzaman30/Data-Driven-Personalized-Educational-Content-Recommendation-System/tree/main
+   git clone https://github.com/maryamzaman30/Data-Driven-Personalized-Educational-Content-Recommendation-System.git
    cd Data-Driven-Personalized-Educational-Content-Recommendation-System
    ```
 > Make sure to clone the repository instead of downloading it. If you download it, the `.pkl` files will be corrupted. Also, ensure that you have Git LFS installed before cloning.
@@ -187,4 +187,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - The EdNet dataset provided by Riiid!
 - Open-source libraries used in this project
-- Contributors who have helped improve this project
