@@ -528,3 +528,88 @@ fastapi.exceptions.HTTPException: 400: Invalid recommendation type
 2025-09-08 14:40:11,258 [INFO] Models loaded successfully.
 2025-09-10 12:46:20,653 [INFO] Starting FastAPI application and loading models...
 2025-09-10 12:46:26,316 [INFO] Models loaded successfully.
+2025-09-10 17:02:40,091 [INFO] Starting FastAPI application and loading models...
+2025-09-10 17:03:21,534 [INFO] Models loaded successfully.
+2025-09-10 17:14:09,785 [INFO] Health check endpoint called.
+2025-09-10 17:14:11,819 [INFO] Fetched 999 users.
+2025-09-10 17:14:13,877 [INFO] Fetching history for user_id=u100200
+2025-09-10 17:14:13,893 [INFO] User history found: 7 records
+2025-09-10 17:14:21,479 [INFO] Health check endpoint called.
+2025-09-10 17:14:23,477 [INFO] Health check endpoint called.
+2025-09-10 17:14:23,995 [INFO] Health check endpoint called.
+2025-09-10 17:14:26,065 [INFO] Fetched 999 users.
+2025-09-10 17:14:28,124 [INFO] Fetching history for user_id=u100696
+2025-09-10 17:14:28,137 [INFO] User history found: 2 records
+2025-09-10 17:14:37,145 [INFO] Health check endpoint called.
+2025-09-10 17:14:39,209 [INFO] Fetched 999 users.
+2025-09-10 17:14:41,274 [INFO] Fetching history for user_id=u100696
+2025-09-10 17:14:41,284 [INFO] User history found: 2 records
+2025-09-10 17:14:43,409 [INFO] Received recommendation request: user=u100696, type=hybrid, top_k=5
+2025-09-10 17:14:43,415 [INFO] Successfully generated 0 hybrid recommendations for user=u100696
+2025-09-12 13:05:05,494 [INFO] Starting FastAPI application and loading models...
+2025-09-12 13:05:23,213 [INFO] Models loaded successfully.
+2025-09-12 13:12:17,954 [INFO] Starting FastAPI application and loading models...
+2025-09-12 13:12:21,442 [INFO] Models loaded successfully.
+2025-09-12 13:12:43,807 [INFO] Health check endpoint called.
+2025-09-12 13:12:45,847 [INFO] Fetched 999 users.
+2025-09-12 13:12:47,895 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:12:47,898 [INFO] User history found: 7 records
+2025-09-12 13:17:28,949 [INFO] Health check endpoint called.
+2025-09-12 13:17:31,015 [INFO] Fetched 999 users.
+2025-09-12 13:17:33,065 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:17:33,070 [INFO] User history found: 7 records
+2025-09-12 13:17:38,561 [INFO] Health check endpoint called.
+2025-09-12 13:17:40,609 [INFO] Fetched 999 users.
+2025-09-12 13:17:42,682 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:17:42,697 [INFO] User history found: 7 records
+2025-09-12 13:17:44,829 [INFO] Received recommendation request: user=u100200, type=hybrid, top_k=5
+2025-09-12 13:17:44,851 [INFO] Successfully generated 5 hybrid recommendations for user=u100200
+2025-09-12 13:18:02,166 [INFO] Health check endpoint called.
+2025-09-12 13:18:04,195 [INFO] Fetched 999 users.
+2025-09-12 13:18:06,232 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:18:06,247 [INFO] User history found: 7 records
+2025-09-12 13:18:08,396 [INFO] Received recommendation request: user=u100200, type=content, top_k=5
+2025-09-12 13:18:11,594 [INFO] Successfully generated 5 content recommendations for user=u100200
+2025-09-12 13:21:25,219 [INFO] Starting FastAPI application and loading models...
+2025-09-12 13:21:28,969 [INFO] Models loaded successfully.
+2025-09-12 13:25:29,851 [INFO] Health check endpoint called.
+2025-09-12 13:25:31,923 [INFO] Fetched 999 users.
+2025-09-12 13:25:33,973 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:25:33,990 [INFO] User history found: 7 records
+2025-09-12 13:25:55,562 [INFO] Starting FastAPI application and loading models...
+2025-09-12 13:25:59,210 [INFO] Models loaded successfully.
+2025-09-12 13:26:20,586 [INFO] Health check endpoint called.
+2025-09-12 13:26:22,609 [INFO] Fetched 999 users.
+2025-09-12 13:26:24,676 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:26:24,697 [INFO] User history found: 7 records
+2025-09-12 13:30:43,839 [INFO] Health check endpoint called.
+2025-09-12 13:30:45,888 [INFO] Fetched 999 users.
+2025-09-12 13:30:47,924 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:30:47,939 [INFO] User history found: 7 records
+2025-09-12 13:30:53,410 [INFO] Health check endpoint called.
+2025-09-12 13:30:55,477 [INFO] Fetched 999 users.
+2025-09-12 13:30:57,536 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:30:57,548 [INFO] User history found: 7 records
+2025-09-12 13:30:59,690 [INFO] Received recommendation request: user=u100200, type=hybrid, top_k=5
+2025-09-12 13:30:59,717 [INFO] Successfully generated 5 hybrid recommendations for user=u100200
+2025-09-12 13:31:13,019 [INFO] Health check endpoint called.
+2025-09-12 13:31:15,083 [INFO] Fetched 999 users.
+2025-09-12 13:31:17,125 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:31:17,141 [INFO] User history found: 7 records
+2025-09-12 13:31:19,283 [INFO] Received recommendation request: user=u100200, type=content, top_k=5
+2025-09-12 13:31:22,602 [INFO] Successfully generated 5 content recommendations for user=u100200
+2025-09-12 13:58:24,143 [INFO] Starting FastAPI application and loading models...
+2025-09-12 13:58:27,845 [INFO] Models loaded successfully.
+2025-09-12 13:58:35,597 [INFO] Health check endpoint called.
+2025-09-12 13:58:48,553 [INFO] Health check endpoint called.
+2025-09-12 13:58:50,606 [INFO] Fetched 999 users.
+2025-09-12 13:58:52,657 [INFO] Fetching history for user_id=u100200
+2025-09-12 13:58:52,677 [INFO] User history found: 7 records
+2025-09-12 16:30:40,654 [INFO] Starting FastAPI application and loading models...
+2025-09-12 16:31:02,237 [INFO] Models loaded successfully.
+2025-09-12 16:31:51,755 [INFO] Health check endpoint called.
+2025-09-12 16:31:53,786 [INFO] Fetched 999 users.
+2025-09-12 16:32:06,065 [INFO] Health check endpoint called.
+2025-09-12 16:32:08,134 [INFO] Fetched 999 users.
+2025-09-12 16:32:10,197 [INFO] Fetching history for user_id=u100200
+2025-09-12 16:32:10,224 [INFO] User history found: 7 records
