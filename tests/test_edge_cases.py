@@ -526,3 +526,46 @@ class TestSystemLimits:
         except Exception:
             signal.alarm(0)  # Cancel timeout
             assert True
+    
+    def test_concurrent_access_limits(self):
+        """Test behavior under concurrent access"""
+        import threading
+        import queue
+        
+        results = queue.Queue()
+        
+        def concurrent_operation(operation_id):
+            """Simulate concurrent operation"""
+            try:
+                # Simulate model operation
+                model = NCF(num_users=100, num_items=50, embedding_dim=16)
+                user_ids = torch.randint(0, 100, (10,))
+                item_ids = torch.randint(0, 50, (10,))
+                
+                with torch.no_grad():
+                    _ = model(user_ids, item_ids)
+                
+                results.put((operation_id, "success"))
+            except Exception as e:
+                results.put((operation_id, f"error: {str(e)}"))
+        
+        # Test multiple concurrent operations
+        threads = []
+        for i in range(10):
+            thread = threading.Thread(target=concurrent_operation, args=(i,))
+            threads.append(thread)
+            thread.start()
+        
+        # Wait for completion
+        for thread in threads:
+            thread.join()
+        
+        # Check results
+        successful_operations = 0
+        while not results.empty():
+            op_id, result = results.get()
+            if "success" in result:
+                successful_operations += 1
+        
+        # Should handle concurrent access gracefully
+        assert successful_operations >= 5  # At least 50% success rate 
