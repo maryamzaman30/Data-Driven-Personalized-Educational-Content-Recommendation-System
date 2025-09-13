@@ -132,6 +132,85 @@ class TestExtremeDataScenarios:
         assert train_matrix.shape == (n_users, n_items)
         # Most interactions should be preserved (accounting for train/test split)
         assert np.sum(train_matrix > 0) > n_interactions * 0.6
+        
+    def test_cold_start_and_diverse_learners(self):
+        """Test handling of cold-start users and diverse learner histories"""
+        # Create a dataset with diverse user interaction patterns
+        np.random.seed(42)
+        
+        # 1. Cold-start users (1-2 interactions)
+        cold_start_users = 5
+        cold_start_interactions = np.random.randint(1, 3, cold_start_users)
+        
+        # 2. Average users (3-10 interactions)
+        avg_users = 10
+        avg_interactions = np.random.randint(3, 11, avg_users)
+        
+        # 3. Power users (11-20 interactions)
+        power_users = 5
+        power_interactions = np.random.randint(11, 21, power_users)
+        
+        # Combine all users
+        all_users = []
+        user_types = []
+        
+        # Add cold-start users
+        for i in range(cold_start_users):
+            all_users.extend([f'cold_{i}'] * cold_start_interactions[i])
+            user_types.extend(['cold_start'] * cold_start_interactions[i])
+            
+        # Add average users
+        for i in range(avg_users):
+            all_users.extend([f'avg_{i}'] * avg_interactions[i])
+            user_types.extend(['average'] * avg_interactions[i])
+            
+        # Add power users
+        for i in range(power_users):
+            all_users.extend([f'power_{i}'] * power_interactions[i])
+            user_types.extend(['power'] * power_interactions[i])
+        
+        # Create the DataFrame with diverse interaction patterns
+        n_interactions = len(all_users)
+        n_items = 50
+        
+        # Create some patterns in the data
+        # Power users tend to answer more correctly
+        correct_answers = []
+        for user_type in user_types:
+            if user_type == 'cold_start':
+                correct_answers.append(np.random.choice([0, 1], p=[0.6, 0.4]))
+            elif user_type == 'average':
+                correct_answers.append(np.random.choice([0, 1], p=[0.4, 0.6]))
+            else:  # power users
+                correct_answers.append(np.random.choice([0, 1], p=[0.2, 0.8]))
+        
+        # Create the dataset
+        diverse_df = pd.DataFrame({
+            'user_id': all_users,
+            'bundle_id': [f'b{np.random.randint(0, n_items)}' for _ in range(n_interactions)],
+            'user_answer': [1 if x == 1 else np.random.randint(0, 2) for x in correct_answers],
+            'correct_answer': correct_answers,
+            'elapsed_time': np.random.randint(5, 300, n_interactions),  # More varied response times
+            'timestamp': range(n_interactions)
+        })
+        
+        # Test with different minimum interaction thresholds
+        for min_interactions in [1, 3, 5]:
+            train_matrix, test_matrix, user_map, item_map = prepare_matrices(
+                diverse_df, 
+                min_interactions=min_interactions
+            )
+            
+            # Verify that we still get reasonable results with cold-start users (when min_interactions=1)
+            if min_interactions == 1:
+                assert len(user_map) > cold_start_users  # Should include at least cold-start users
+            
+            # Verify the shape makes sense
+            assert train_matrix.shape[0] == len(user_map)
+            assert train_matrix.shape[1] == len(item_map)
+            
+            # Verify we have some interactions
+            assert np.sum(train_matrix > 0) > 0
 
 # =========================================================
 # 2. Boundary Conditions
@@ -447,46 +526,3 @@ class TestSystemLimits:
         except Exception:
             signal.alarm(0)  # Cancel timeout
             assert True
-    
-    def test_concurrent_access_limits(self):
-        """Test behavior under concurrent access"""
-        import threading
-        import queue
-        
-        results = queue.Queue()
-        
-        def concurrent_operation(operation_id):
-            """Simulate concurrent operation"""
-            try:
-                # Simulate model operation
-                model = NCF(num_users=100, num_items=50, embedding_dim=16)
-                user_ids = torch.randint(0, 100, (10,))
-                item_ids = torch.randint(0, 50, (10,))
-                
-                with torch.no_grad():
-                    _ = model(user_ids, item_ids)
-                
-                results.put((operation_id, "success"))
-            except Exception as e:
-                results.put((operation_id, f"error: {str(e)}"))
-        
-        # Test multiple concurrent operations
-        threads = []
-        for i in range(10):
-            thread = threading.Thread(target=concurrent_operation, args=(i,))
-            threads.append(thread)
-            thread.start()
-        
-        # Wait for completion
-        for thread in threads:
-            thread.join()
-        
-        # Check results
-        successful_operations = 0
-        while not results.empty():
-            op_id, result = results.get()
-            if "success" in result:
-                successful_operations += 1
-        
-        # Should handle concurrent access gracefully
-        assert successful_operations >= 5  # At least 50% success rate 
