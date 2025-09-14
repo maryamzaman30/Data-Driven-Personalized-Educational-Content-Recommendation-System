@@ -647,3 +647,51 @@ fastapi.exceptions.HTTPException: 400: Invalid recommendation type
 2025-09-13 20:20:38,222 [INFO] User history found: 7 records
 2025-09-13 20:20:40,404 [INFO] Received recommendation request: user=u100200, type=content, top_k=5
 2025-09-13 20:20:44,384 [INFO] Successfully generated 5 content recommendations for user=u100200
+2025-09-14 10:10:07,720 [INFO] Starting FastAPI application and loading models...
+2025-09-14 10:10:14,166 [INFO] Models loaded successfully.
+2025-09-14 10:11:49,940 [INFO] Health check endpoint called.
+2025-09-14 10:11:52,005 [INFO] Fetched 999 users.
+2025-09-14 10:11:54,056 [INFO] Fetching history for user_id=u100200
+2025-09-14 10:11:54,056 [INFO] User history found: 7 records
+2025-09-14 10:16:00,035 [INFO] Health check endpoint called.
+2025-09-14 10:16:00,574 [INFO] Health check endpoint called.
+2025-09-14 10:16:02,639 [INFO] Fetched 999 users.
+2025-09-14 10:16:04,713 [INFO] Fetching history for user_id=u100200
+2025-09-14 10:16:04,728 [INFO] User history found: 7 records
+2025-09-14 10:16:09,826 [INFO] Health check endpoint called.
+2025-09-14 10:16:11,866 [INFO] Fetched 999 users.
+2025-09-14 10:16:13,930 [INFO] Fetching history for user_id=u100200
+2025-09-14 10:16:13,942 [INFO] User history found: 7 records
+2025-09-14 10:16:16,070 [INFO] Received recommendation request: user=u100200, type=hybrid, top_k=5
+2025-09-14 10:16:16,086 [INFO] Successfully generated 5 hybrid recommendations for user=u100200
+2025-09-14 10:16:29,776 [INFO] Health check endpoint called.
+2025-09-14 10:16:31,812 [INFO] Fetched 999 users.
+2025-09-14 10:16:33,853 [INFO] Fetching history for user_id=u100200
+2025-09-14 10:16:33,866 [INFO] User history found: 7 records
+2025-09-14 10:16:35,999 [INFO] Received recommendation request: user=u100200, type=content, top_k=5
+2025-09-14 10:16:37,609 [INFO] Successfully generated 5 content recommendations for user=u100200
+2025-09-14 10:27:52,983 [INFO] Health check endpoint called.
+2025-09-14 10:27:55,035 [INFO] Fetched 999 users.
+2025-09-14 10:27:57,069 [INFO] Fetching history for user_id=u100200
+2025-09-14 10:27:57,086 [INFO] User history found: 7 records
+2025-09-14 10:27:59,326 [INFO] Received recommendation request: user=u100200, type=collaborative, top_k=5
+2025-09-14 10:27:59,494 [INFO] Generated 5 recommendations for user 0
+2025-09-14 10:27:59,499 [INFO] Successfully generated 5 collaborative recommendations for user=u100200
+2025-09-14 10:28:09,917 [INFO] Health check endpoint called.
+2025-09-14 10:28:11,966 [INFO] Fetched 999 users.
+2025-09-14 10:28:14,007 [INFO] Fetching history for user_id=u100200
+2025-09-14 10:28:14,023 [INFO] User history found: 7 records
+2025-09-14 10:28:16,282 [INFO] Received recommendation request: user=u100200, type=advanced_hybrid, top_k=5
+2025-09-14 10:28:19,399 [INFO] Successfully generated 5 advanced_hybrid recommendations for user=u100200
+2025-09-14 17:03:06,788 [INFO] Starting FastAPI application and loading models...
+2025-09-14 17:03:42,725 [INFO] Models loaded successfully.
+2025-09-14 17:09:37,999 [INFO] Health check endpoint called.
+2025-09-14 17:12:21,467 [INFO] Fetched 999 users.
+2025-09-14 17:15:43,841 [INFO] Fetching history for user_id=u101324
+2025-09-14 17:15:43,853 [INFO] User history found: 30 records
+2025-09-14 18:23:06,369 [INFO] Starting FastAPI application and loading models...
+2025-09-14 18:23:48,407 [INFO] Models loaded successfully.
+2025-09-14 18:27:56,918 [INFO] Received recommendation request: user=u123, type=hybrid, top_k=5
+2025-09-14 18:27:56,927 [WARNING] Invalid user_id in recommendation request: u123
+2025-09-14 18:28:28,766 [INFO] Received recommendation request: user=u101324, type=hybrid, top_k=5
+2025-09-14 18:28:28,827 [INFO] Successfully generated 5 hybrid recommendations for user=u101324

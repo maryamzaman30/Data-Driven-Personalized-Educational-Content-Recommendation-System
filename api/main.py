@@ -80,16 +80,28 @@ logger.info("Models loaded successfully.")
 @app.get("/")
 async def root():
     """
-    Root endpoint that provides basic API information and available endpoints.
+    Root endpoint that provides basic API information, available endpoints,
+    and links to interactive documentation.
     """
     return {
         "message": "Educational Content Recommendation System API",
+        "description": (
+            "This API provides personalized TOEIC study recommendations, "
+            "user history access, and system health monitoring."
+        ),
+        "docs": {
+            "Swagger UI": "/docs",
+            "ReDoc": "/redoc"
+        },
         "endpoints": {
-            "GET /": "This documentation",
+            "GET /": "This information page",
             "GET /health": "Health check endpoint",
             "GET /users": "List all available users",
             "GET /user/{user_id}/history": "Get user interaction history",
-            "POST /recommendations": "Get recommendations (requires JSON body with user_id, method, n)"
+            "POST /recommendations": (
+                "Generate personalized recommendations "
+                "(requires JSON body with user_id, recommendation_type, n_recommendations)"
+            ),
         },
     }
 
