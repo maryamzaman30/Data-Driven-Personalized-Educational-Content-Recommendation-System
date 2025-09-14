@@ -117,6 +117,7 @@ If you don't want to use GitHub LFS limits, then you have 2 other options:
 ### 1. Train all models from scratch
 
 Run the Jupyter notebooks in the `notebooks/` directory after setting up your virtual environment and installing dependencies.
+
 ⚠️ Note: Training can take several hours.
 
 ### 2. Download from Google Drive
@@ -177,8 +178,8 @@ You can test GET endpoints directly in your browser:
 
 ### API documentaions
 
-You can explore API docs at `http://localhost:8000/docs`
-And explore API redoc at `http://localhost:8000/redoc`
+- You can explore API docs at `http://localhost:8000/docs`
+- And explore API redoc at `http://localhost:8000/redoc`
 
 ### Testing POST Requests
 
@@ -186,14 +187,14 @@ And explore API redoc at `http://localhost:8000/redoc`
 
 Since the backend is built with **FastAPI**, it automatically provides interactive API docs.
 
-1. Start the API (e.g., `uvicorn api.main:app --reload`).
-2. Open your browser at:
+- Start the API (e.g., `uvicorn api.main:app --reload`).
+- Open your browser at:
 
    ```
    http://localhost:8000/docs
    ```
-3. You’ll see an interactive UI. Scroll to `POST /recommendations`.
-4. Click **Try it out**, fill in the request body JSON (example below) and click **Execute**.
+- You’ll see an interactive UI. Scroll to `POST /recommendations`.
+- Click **Try it out**, fill in the request body JSON (example below) and click **Execute**.
 
 ```json
 {
