@@ -89,7 +89,8 @@ project-root/
    git clone https://github.com/maryamzaman30/Data-Driven-Personalized-Educational-Content-Recommendation-System.git
    cd Data-Driven-Personalized-Educational-Content-Recommendation-System
    ```
-**Make sure to clone the repository instead of downloading it. If you download it, the `.pkl` files will be corrupted. Also, ensure that you have Git LFS installed before cloning**
+- **Make sure to clone the repository instead of downloading it. If you download it, the `.pkl` files will be corrupted. Also, ensure that you have Git LFS installed before cloning**
+- **If you don't want to use GitHub LFS limits, then you have 2 other options, keep reading**
 
 2. Create and activate a virtual environment:
    ```bash
@@ -127,6 +128,8 @@ Run the Jupyter notebooks in the `notebooks/` directory after setting up your vi
 ---
 
 ## Usage
+
+⚠️ Ensure that the `models/` directory contains the required model files before starting the server.
 
 ### Running the API Server
 
@@ -239,8 +242,8 @@ For the recommendation endpoint, use this PowerShell command:
 ```powershell
 $body = @{
     user_id = "u101324"
-    method = "content"
-    n = 5
+    recommendation_type = "content"
+    n_recommendations = 5
 } | ConvertTo-Json
 
 $response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/recommend" `
