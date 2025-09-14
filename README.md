@@ -187,14 +187,14 @@ You can test GET endpoints directly in your browser:
 
 Since the backend is built with **FastAPI**, it automatically provides interactive API docs.
 
-- Start the API (e.g., `uvicorn api.main:app --reload`).
-- Open your browser at:
+* Start the API (e.g., `uvicorn api.main:app --reload`).
+* Open your browser at:
 
    ```
    http://localhost:8000/docs
    ```
-- You’ll see an interactive UI. Scroll to `POST /recommendations`.
-- Click **Try it out**, fill in the request body JSON (example below) and click **Execute**.
+* You’ll see an interactive UI. Scroll to `POST /recommendations`.
+* Click **Try it out**, fill in the request body JSON (example below) and click **Execute**.
 
 ```json
 {
