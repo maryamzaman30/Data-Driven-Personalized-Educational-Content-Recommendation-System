@@ -89,7 +89,7 @@ project-root/
    git clone https://github.com/maryamzaman30/Data-Driven-Personalized-Educational-Content-Recommendation-System.git
    cd Data-Driven-Personalized-Educational-Content-Recommendation-System
    ```
-> Make sure to clone the repository instead of downloading it. If you download it, the `.pkl` files will be corrupted. Also, ensure that you have Git LFS installed before cloning.
+**Make sure to clone the repository instead of downloading it. If you download it, the `.pkl` files will be corrupted. Also, ensure that you have Git LFS installed before cloning**
 
 2. Create and activate a virtual environment:
    ```bash
@@ -106,6 +106,25 @@ project-root/
    ```bash
    pip install -r requirements.txt
    ```
+
+---
+
+## Model Files (Large Assets)
+
+If you don't want to use GitHub LFS limits, then you have 2 other options:
+
+### 1. Train all models from scratch
+
+Run the Jupyter notebooks in the `notebooks/` directory after setting up your virtual environment and installing dependencies.
+⚠️ Note: Training can take several hours.
+
+### 2. Download from Google Drive
+
+* Download from [Google Drive](https://drive.google.com/file/d/1pSb-WDTE8tfYqvnin5wDnVwoBHvXaBQs/view?usp=drive_link)
+* Unzip the folder
+* Copy all 7 model files into the `models/` directory.
+
+---
 
 ## Usage
 
@@ -135,29 +154,91 @@ project-root/
 ## API Testing
 
 ### Available Endpoints
-
+- `GET /` - API root
 - `GET /health` - Health check
 - `GET /users` - List all users
-- `GET /user/{user_id}/history` - Get user interaction history e.g. `http://127.0.0.1:8000/user/u101324/history` 
+- `GET /user/{user_id}/history`
 - `POST /recommend` - Get recommendations
   - Parameters:
-    - `user_id`: Target user ID (e.g., 'u105425')
+    - `user_id`: Target user ID (e.g., 'u101324')
     - `method`: Recommendation method ('content', 'collaborative', 'hybrid', 'advanced_hybrid')
     - `n`: Number of recommendations to return
 
 ### Testing with Browser
 
 You can test GET endpoints directly in your browser:
-- Health check: `http://127.0.0.1:8000/health`
-- List users: `http://127.0.0.1:8000/users`
+- API root endpoint `http://localhost:8000`
+- Health check: `http://localhost:8000/health`
+- List users: `http://localhost:8000/users`
+- User interaction history e.g. `http://localhost:8000/user/u101324/history`  (u101324 is an example ID)
 
-### Testing POST Requests with PowerShell
+### API documentaions
+
+You can explore API docs at `http://localhost:8000/docs`
+And explore API redoc at `http://localhost:8000/redoc`
+
+### Testing POST Requests
+
+#### 1. Using FastAPI’s built-in Swagger UI
+
+Since the backend is built with **FastAPI**, it automatically provides interactive API docs.
+
+1. Start the API (e.g., `uvicorn api.main:app --reload`).
+2. Open your browser at:
+
+   ```
+   http://localhost:8000/docs
+   ```
+3. You’ll see an interactive UI. Scroll to `POST /recommendations`.
+4. Click **Try it out**, fill in the request body JSON (example below) and click **Execute**.
+
+```json
+{
+  "user_id": "u101324",
+  "n_recommendations": 5,
+  "recommendation_type": "hybrid"
+}
+```
+
+You’ll immediately see the response from the API in the same page.
+
+#### 2. Using a tool like **Postman** or **Insomnia**
+
+* Open Postman → New Request → choose `POST`.
+* URL: `http://127.0.0.1:8000/recommendations`
+* Select **Body → raw → JSON** and paste:
+
+```json
+{
+  "user_id": "u101324",
+  "n_recommendations": 5,
+  "recommendation_type": "hybrid"
+}
+```
+
+* Hit **Send** → You’ll get back your list of recommended bundles/lectures.
+
+#### 3. Using `curl` in the terminal
+
+If you prefer command line:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/recommendations" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "user_id": "u101324",
+           "n_recommendations": 5,
+           "recommendation_type": "hybrid"
+         }'
+```
+
+#### 4. in PowerShell
 
 For the recommendation endpoint, use this PowerShell command:
 
 ```powershell
 $body = @{
-    user_id = "u105425"
+    user_id = "u101324"
     method = "content"
     n = 5
 } | ConvertTo-Json
@@ -171,7 +252,7 @@ $response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/recommend" `
 $response
 ```
 
-## Data Sources
+## Dataset Sources
 
 - [EdNet Dataset (KT1 & Contents)](https://github.com/riiid/ednet)
 

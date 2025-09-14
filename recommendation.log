@@ -695,3 +695,10 @@ fastapi.exceptions.HTTPException: 400: Invalid recommendation type
 2025-09-14 18:27:56,927 [WARNING] Invalid user_id in recommendation request: u123
 2025-09-14 18:28:28,766 [INFO] Received recommendation request: user=u101324, type=hybrid, top_k=5
 2025-09-14 18:28:28,827 [INFO] Successfully generated 5 hybrid recommendations for user=u101324
+2025-09-14 18:48:22,412 [INFO] Starting FastAPI application and loading models...
+2025-09-14 18:48:26,346 [INFO] Models loaded successfully.
+2025-09-14 18:52:10,818 [INFO] Fetched 999 users.
+2025-09-14 18:52:50,693 [INFO] Received recommendation request: user=u100200, type=hybrid, top_k=5
+2025-09-14 18:52:50,706 [INFO] Successfully generated 5 hybrid recommendations for user=u100200
+2025-09-14 19:01:07,915 [INFO] Starting FastAPI application and loading models...
+2025-09-14 19:01:11,724 [INFO] Models loaded successfully.
