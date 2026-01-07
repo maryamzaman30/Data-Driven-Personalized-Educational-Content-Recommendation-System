@@ -4,6 +4,8 @@
 
 A comprehensive recommendation system for personalized educational content, focusing on TOEIC preparation. This system leverages multiple machine learning approaches to provide tailored learning recommendations.
 
+Video Demo - youtu.be/DQSYn6naWUU 
+
 ## Features
 
 - **Multiple Recommendation Strategies**:
@@ -33,7 +35,7 @@ project-root/
 │   ├── questions.csv                      # Question bank data
 │   └── sampled_kt1_logs.csv               # Sampled data
 │
-├── models/                               # Pre-trained model files 
+├── models/                               # Pre-trained model files (Can be Generated from Jupyter Notebooks)
 │   ├── advanced_hybrid_model.pkl           # Advanced hybrid model
 │   ├── content_based_model_best.pkl        # Content-based best model
 │   ├── content_based_model.pkl             # Content-based model
@@ -89,8 +91,6 @@ project-root/
    git clone https://github.com/maryamzaman30/Data-Driven-Personalized-Educational-Content-Recommendation-System.git
    cd Data-Driven-Personalized-Educational-Content-Recommendation-System
    ```
-- **Make sure to clone the repository instead of downloading it. If you download it, the `.pkl` files will be corrupted. Also, ensure that you have Git LFS installed before cloning**
-- **If you don't want to use GitHub LFS limits, then you have 2 other options, keep reading**
 
 2. Create and activate a virtual environment:
    ```bash
@@ -112,19 +112,11 @@ project-root/
 
 ## Model Files (Large Assets)
 
-If you don't want to use GitHub LFS limits, then you have 2 other options:
-
 ### 1. Train all models from scratch
 
 Run the Jupyter notebooks in the `notebooks/` directory after setting up your virtual environment and installing dependencies.
 
 ⚠️ Note: Training can take several hours.
-
-### 2. Download from Google Drive
-
-* Download from [Google Drive](https://drive.google.com/file/d/1pSb-WDTE8tfYqvnin5wDnVwoBHvXaBQs/view?usp=drive_link)
-* Unzip the folder
-* Copy all 7 model files into the `models/` directory.
 
 ---
 
