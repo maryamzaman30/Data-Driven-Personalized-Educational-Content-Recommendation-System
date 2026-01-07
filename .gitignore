@@ -41,6 +41,15 @@ env/
 .env.local
 .env.*.local
 
+# Model files
+models/advanced_hybrid_model.pkl
+models/content_based_model_best.pkl
+models/content_based_model.pkl
+models/content_similarity.pkl
+models/ncf_model.pth
+models/svd_hybrid_model_best.pkl
+models/svd_hybrid_model.pkl
+
 # Testing
 .pytest_cache/
 .tox/
@@ -81,6 +90,12 @@ local_settings.py
 
 # Project specific
 *.joblib
+
+# Pickle files
+*.pkl
+*.pth
+*.model
+*.pickle
 
 # Logs and databases
 *.sql
